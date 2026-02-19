@@ -1,7 +1,8 @@
-import 'package:expense_control_app/features/analytics/presentation/providers/analytics_providers.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:expense_control_app/features/analytics/presentation/providers/analytics_providers.dart';
 
 class AnalyticsScreen extends ConsumerWidget {
   const AnalyticsScreen({super.key});
@@ -12,30 +13,38 @@ class AnalyticsScreen extends ConsumerWidget {
     final byCategory = ref.watch(spendingByCategoryProvider);
     final byCard = ref.watch(spendingByCardProvider);
 
-    return SafeArea(
-      child: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          const Text(
-            'Gastos por mes',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+    return Scaffold(
+      body: CustomScrollView(
+        physics: const ClampingScrollPhysics(),
+        slivers: [
+          const SliverAppBar(pinned: true, title: Text('Analitica')),
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverList.list(
+              children: [
+                const Text(
+                  'Gastos por mes',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 8),
+                SizedBox(height: 220, child: _MonthBarChart(data: byMonth)),
+                const SizedBox(height: 16),
+                const Text(
+                  'Gastos por categoria',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 8),
+                SizedBox(height: 220, child: _PieFromTuples(data: byCategory)),
+                const SizedBox(height: 16),
+                const Text(
+                  'Gastos por tarjeta',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 8),
+                SizedBox(height: 220, child: _PieFromTuples(data: byCard)),
+              ],
+            ),
           ),
-          const SizedBox(height: 8),
-          SizedBox(height: 220, child: _MonthBarChart(data: byMonth)),
-          const SizedBox(height: 16),
-          const Text(
-            'Gastos por categoria',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 8),
-          SizedBox(height: 220, child: _PieFromTuples(data: byCategory)),
-          const SizedBox(height: 16),
-          const Text(
-            'Gastos por tarjeta',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 8),
-          SizedBox(height: 220, child: _PieFromTuples(data: byCard)),
         ],
       ),
     );

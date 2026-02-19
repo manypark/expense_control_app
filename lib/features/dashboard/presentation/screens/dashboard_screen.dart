@@ -1,10 +1,11 @@
-import 'package:expense_control_app/core/services/app_providers.dart';
-import 'package:expense_control_app/features/dashboard/domain/entities/money_account.dart';
-import 'package:expense_control_app/features/dashboard/presentation/providers/dashboard_providers.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:expense_control_app/core/services/app_providers.dart';
+import 'package:expense_control_app/features/dashboard/domain/entities/entities.dart';
+import 'package:expense_control_app/features/dashboard/presentation/presentation.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -15,75 +16,88 @@ class DashboardScreen extends ConsumerWidget {
     final total = ref.watch(totalMoneyProvider);
     final currency = NumberFormat.currency(locale: 'es_MX', symbol: r'$');
 
-    return SafeArea(
-      child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: accountsAsync.when(
-            data: (accounts) {
-              return ListView(
-                children: [
-                  const Text(
-                    'Total disponible',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    currency.format(total),
-                    style: const TextStyle(
-                      fontSize: 34,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    height: 220,
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: _AccountsPieChart(accounts: accounts),
+    return Scaffold(
+      body: accountsAsync.when(
+        data: (accounts) {
+          return CustomScrollView(
+            physics: const ClampingScrollPhysics(),
+            slivers: [
+              const SliverAppBar(pinned: true),
+              SliverPadding(
+                padding: const EdgeInsets.all(16),
+                sliver: SliverList.list(
+                  children: [
+                    const Text(
+                      'Total disponible',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Bancos y fintech',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(height: 8),
-                  for (final account in accounts)
-                    Card(
-                      child: ListTile(
-                        title: Text(account.name),
-                        subtitle: Text(account.code),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(currency.format(account.balance)),
-                            IconButton(
-                              onPressed: () =>
-                                  _confirmDeleteAccount(context, ref, account),
-                              icon: const Icon(Icons.delete_outline),
-                              tooltip: 'Eliminar',
-                            ),
-                          ],
+                    const SizedBox(height: 8),
+                    Text(
+                      currency.format(total),
+                      style: const TextStyle(
+                        fontSize: 34,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      height: 220,
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: _AccountsPieChart(accounts: accounts),
                         ),
-                        onTap: () =>
-                            _showAccountForm(context, ref, account: account),
                       ),
                     ),
-                ],
-              );
-            },
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, _) => Center(child: Text('Error: $error')),
-          ),
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () => _showAccountForm(context, ref),
-          icon: const Icon(Icons.add),
-          label: const Text('Agregar cuenta'),
-        ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Bancos y fintech',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    for (final account in accounts)
+                      Card(
+                        child: ListTile(
+                          title: Text(account.name),
+                          subtitle: Text(account.code),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(currency.format(account.balance)),
+                              IconButton(
+                                onPressed: () => _confirmDeleteAccount(
+                                  context,
+                                  ref,
+                                  account,
+                                ),
+                                icon: const Icon(Icons.delete_outline),
+                                tooltip: 'Eliminar',
+                              ),
+                            ],
+                          ),
+                          onTap: () =>
+                              _showAccountForm(context, ref, account: account),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, _) => Center(child: Text('Error: $error')),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _showAccountForm(context, ref),
+        icon: const Icon(Icons.add),
+        label: const Text('Agregar cuenta'),
       ),
     );
   }

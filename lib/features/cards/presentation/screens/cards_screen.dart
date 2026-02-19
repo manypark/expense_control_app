@@ -1,9 +1,10 @@
-import 'package:expense_control_app/core/services/app_providers.dart';
-import 'package:expense_control_app/features/cards/domain/entities/credit_card.dart';
-import 'package:expense_control_app/features/cards/presentation/providers/cards_providers.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
+
+import 'package:expense_control_app/core/services/app_providers.dart';
+import 'package:expense_control_app/features/cards/domain/entities/entities.dart';
+import 'package:expense_control_app/features/cards/presentation/providers/providers.dart';
 
 class CardsScreen extends ConsumerWidget {
   const CardsScreen({super.key});
@@ -13,41 +14,54 @@ class CardsScreen extends ConsumerWidget {
     final cardsAsync = ref.watch(availableCardsProvider);
     final currency = NumberFormat.currency(locale: 'es_MX', symbol: r'$');
 
-    return SafeArea(
-      child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: cardsAsync.when(
-            data: (cards) {
-              if (cards.isEmpty) {
-                return const Center(child: Text('No hay tarjetas registradas'));
-              }
+    return Scaffold(
+      body: cardsAsync.when(
+        data: (cards) {
+          if (cards.isEmpty) {
+            return const CustomScrollView(
+              physics: ClampingScrollPhysics(),
+              slivers: [
+                SliverAppBar(pinned: true, title: Text('Tarjetas')),
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(child: Text('No hay tarjetas registradas')),
+                ),
+              ],
+            );
+          }
 
-              return ListView(
-                children: [
-                  for (final card in cards)
-                    Card(
-                      child: ListTile(
-                        title: Text(card.label),
-                        subtitle: Text(
-                          '${card.bank} | Cierre ${card.closingDay} | Pago ${card.dueDay}',
+          return CustomScrollView(
+            physics: const ClampingScrollPhysics(),
+            slivers: [
+              const SliverAppBar(pinned: true, title: Text('Tarjetas')),
+              SliverPadding(
+                padding: const EdgeInsets.all(16),
+                sliver: SliverList.list(
+                  children: [
+                    for (final card in cards)
+                      Card(
+                        child: ListTile(
+                          title: Text(card.label),
+                          subtitle: Text(
+                            '${card.bank} | Cierre ${card.closingDay} | Pago ${card.dueDay}',
+                          ),
+                          trailing: Text(currency.format(card.creditLimit)),
+                          onTap: () => _showCardForm(context, ref, card: card),
                         ),
-                        trailing: Text(currency.format(card.creditLimit)),
-                        onTap: () => _showCardForm(context, ref, card: card),
                       ),
-                    ),
-                ],
-              );
-            },
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, _) => Center(child: Text('Error: $error')),
-          ),
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () => _showCardForm(context, ref),
-          icon: const Icon(Icons.add),
-          label: const Text('Agregar tarjeta'),
-        ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, _) => Center(child: Text('Error: $error')),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _showCardForm(context, ref),
+        icon: const Icon(Icons.add),
+        label: const Text('Agregar tarjeta'),
       ),
     );
   }
