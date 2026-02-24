@@ -11,7 +11,7 @@ AsyncValue<List<CreditCardEntity>> availableCards(AvailableCardsRef ref) {
 }
 
 @riverpod
-Map<int, CreditCardEntity> cardsById(CardsByIdRef ref) {
+Map<String, CreditCardEntity> cardsById(CardsByIdRef ref) {
   final cards = ref.watch(availableCardsProvider).valueOrNull ?? const [];
   return {for (final card in cards) card.id: card};
 }

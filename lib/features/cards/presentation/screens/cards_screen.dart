@@ -158,7 +158,7 @@ class CardsScreen extends ConsumerWidget {
                 child: FilledButton(
                   onPressed: () async {
                     final entity = CreditCardEntity(
-                      id: card?.id ?? 0,
+                      id: card?.id ?? '',
                       alias: aliasController.text.trim(),
                       bank: bankController.text.trim(),
                       last4: last4Controller.text.trim(),

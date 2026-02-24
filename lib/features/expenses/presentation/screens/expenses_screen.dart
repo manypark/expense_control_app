@@ -109,12 +109,16 @@ class ExpensesScreen extends ConsumerWidget {
   }
 
   Future<void> _showReceipt(BuildContext context, String path) {
+    final isNetwork = path.startsWith('http://') || path.startsWith('https://');
+
     return showDialog<void>(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: const Text('Ticket guardado'),
-          content: Image.file(File(path), fit: BoxFit.contain),
+          content: isNetwork
+              ? Image.network(path, fit: BoxFit.contain)
+              : Image.file(File(path), fit: BoxFit.contain),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),

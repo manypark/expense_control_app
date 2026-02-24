@@ -9,7 +9,7 @@ class CreditCardEntity {
     required this.creditLimit,
   });
 
-  final int id;
+  final String id;
   final String alias;
   final String bank;
   final String last4;

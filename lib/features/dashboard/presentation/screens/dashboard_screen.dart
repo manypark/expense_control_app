@@ -158,7 +158,7 @@ class DashboardScreen extends ConsumerWidget {
                 child: FilledButton(
                   onPressed: () async {
                     final entity = MoneyAccountEntity(
-                      id: account?.id ?? 0,
+                      id: account?.id ?? '',
                       code: codeController.text.trim(),
                       name: nameController.text.trim(),
                       balance:

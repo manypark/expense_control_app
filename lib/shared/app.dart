@@ -1,4 +1,4 @@
-import 'package:expense_control_app/shared/app_shell.dart';
+import 'package:expense_control_app/shared/auth_gate.dart';
 import 'package:flutter/material.dart';
 
 class ExpenseControlApp extends StatelessWidget {
@@ -11,7 +11,7 @@ class ExpenseControlApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(colorSchemeSeed: Colors.teal, useMaterial3: true),
       scrollBehavior: const AppScrollBehavior(),
-      home: const AppShell(),
+      home: const AuthGate(),
     );
   }
 }

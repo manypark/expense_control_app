@@ -17,8 +17,16 @@ const CreditCardModelSchema = CollectionSchema(
   name: r'CreditCardModel',
   id: 5536749382818049299,
   properties: {
-    r'alias': PropertySchema(id: 0, name: r'alias', type: IsarType.string),
-    r'bank': PropertySchema(id: 1, name: r'bank', type: IsarType.string),
+    r'alias': PropertySchema(
+      id: 0,
+      name: r'alias',
+      type: IsarType.string,
+    ),
+    r'bank': PropertySchema(
+      id: 1,
+      name: r'bank',
+      type: IsarType.string,
+    ),
     r'closingDay': PropertySchema(
       id: 2,
       name: r'closingDay',
@@ -29,8 +37,16 @@ const CreditCardModelSchema = CollectionSchema(
       name: r'creditLimit',
       type: IsarType.double,
     ),
-    r'dueDay': PropertySchema(id: 4, name: r'dueDay', type: IsarType.long),
-    r'last4': PropertySchema(id: 5, name: r'last4', type: IsarType.string),
+    r'dueDay': PropertySchema(
+      id: 4,
+      name: r'dueDay',
+      type: IsarType.long,
+    ),
+    r'last4': PropertySchema(
+      id: 5,
+      name: r'last4',
+      type: IsarType.string,
+    )
   },
   estimateSize: _creditCardModelEstimateSize,
   serialize: _creditCardModelSerialize,
@@ -122,10 +138,7 @@ List<IsarLinkBase<dynamic>> _creditCardModelGetLinks(CreditCardModel object) {
 }
 
 void _creditCardModelAttach(
-  IsarCollection<dynamic> col,
-  Id id,
-  CreditCardModel object,
-) {
+    IsarCollection<dynamic> col, Id id, CreditCardModel object) {
   object.id = id;
 }
 
@@ -141,15 +154,17 @@ extension CreditCardModelQueryWhereSort
 extension CreditCardModelQueryWhere
     on QueryBuilder<CreditCardModel, CreditCardModel, QWhereClause> {
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterWhereClause> idEqualTo(
-    Id id,
-  ) {
+      Id id) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IdWhereClause.between(lower: id, upper: id));
+      return query.addWhereClause(IdWhereClause.between(
+        lower: id,
+        upper: id,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterWhereClause>
-  idNotEqualTo(Id id) {
+      idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -172,7 +187,7 @@ extension CreditCardModelQueryWhere
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterWhereClause>
-  idGreaterThan(Id id, {bool include = false}) {
+      idGreaterThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: id, includeLower: include),
@@ -181,9 +196,8 @@ extension CreditCardModelQueryWhere
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterWhereClause> idLessThan(
-    Id id, {
-    bool include = false,
-  }) {
+      Id id,
+      {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.lessThan(upper: id, includeUpper: include),
@@ -198,14 +212,12 @@ extension CreditCardModelQueryWhere
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IdWhereClause.between(
-          lower: lowerId,
-          includeLower: includeLower,
-          upper: upperId,
-          includeUpper: includeUpper,
-        ),
-      );
+      return query.addWhereClause(IdWhereClause.between(
+        lower: lowerId,
+        includeLower: includeLower,
+        upper: upperId,
+        includeUpper: includeUpper,
+      ));
     });
   }
 }
@@ -213,56 +225,53 @@ extension CreditCardModelQueryWhere
 extension CreditCardModelQueryFilter
     on QueryBuilder<CreditCardModel, CreditCardModel, QFilterCondition> {
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  aliasEqualTo(String value, {bool caseSensitive = true}) {
+      aliasEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(
-          property: r'alias',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'alias',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  aliasGreaterThan(
+      aliasGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'alias',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'alias',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  aliasLessThan(
+      aliasLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'alias',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'alias',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  aliasBetween(
+      aliasBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -270,140 +279,135 @@ extension CreditCardModelQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'alias',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'alias',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  aliasStartsWith(String value, {bool caseSensitive = true}) {
+      aliasStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.startsWith(
-          property: r'alias',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'alias',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  aliasEndsWith(String value, {bool caseSensitive = true}) {
+      aliasEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.endsWith(
-          property: r'alias',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'alias',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  aliasContains(String value, {bool caseSensitive = true}) {
+      aliasContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.contains(
-          property: r'alias',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'alias',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  aliasMatches(String pattern, {bool caseSensitive = true}) {
+      aliasMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.matches(
-          property: r'alias',
-          wildcard: pattern,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'alias',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  aliasIsEmpty() {
+      aliasIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'alias', value: ''),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'alias',
+        value: '',
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  aliasIsNotEmpty() {
+      aliasIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(property: r'alias', value: ''),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'alias',
+        value: '',
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  bankEqualTo(String value, {bool caseSensitive = true}) {
+      bankEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(
-          property: r'bank',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'bank',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  bankGreaterThan(
+      bankGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'bank',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'bank',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  bankLessThan(
+      bankLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'bank',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'bank',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  bankBetween(
+      bankBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -411,195 +415,191 @@ extension CreditCardModelQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'bank',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'bank',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  bankStartsWith(String value, {bool caseSensitive = true}) {
+      bankStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.startsWith(
-          property: r'bank',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'bank',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  bankEndsWith(String value, {bool caseSensitive = true}) {
+      bankEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.endsWith(
-          property: r'bank',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'bank',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  bankContains(String value, {bool caseSensitive = true}) {
+      bankContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.contains(
-          property: r'bank',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'bank',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  bankMatches(String pattern, {bool caseSensitive = true}) {
+      bankMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.matches(
-          property: r'bank',
-          wildcard: pattern,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'bank',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  bankIsEmpty() {
+      bankIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'bank', value: ''),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'bank',
+        value: '',
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  bankIsNotEmpty() {
+      bankIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(property: r'bank', value: ''),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'bank',
+        value: '',
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  closingDayEqualTo(int value) {
+      closingDayEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'closingDay', value: value),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'closingDay',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  closingDayGreaterThan(int value, {bool include = false}) {
+      closingDayGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'closingDay',
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'closingDay',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  closingDayLessThan(int value, {bool include = false}) {
+      closingDayLessThan(
+    int value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'closingDay',
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'closingDay',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  closingDayBetween(
+      closingDayBetween(
     int lower,
     int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'closingDay',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'closingDay',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  creditLimitEqualTo(double value, {double epsilon = Query.epsilon}) {
+      creditLimitEqualTo(
+    double value, {
+    double epsilon = Query.epsilon,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(
-          property: r'creditLimit',
-          value: value,
-          epsilon: epsilon,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'creditLimit',
+        value: value,
+        epsilon: epsilon,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  creditLimitGreaterThan(
+      creditLimitGreaterThan(
     double value, {
     bool include = false,
     double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'creditLimit',
-          value: value,
-          epsilon: epsilon,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'creditLimit',
+        value: value,
+        epsilon: epsilon,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  creditLimitLessThan(
+      creditLimitLessThan(
     double value, {
     bool include = false,
     double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'creditLimit',
-          value: value,
-          epsilon: epsilon,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'creditLimit',
+        value: value,
+        epsilon: epsilon,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  creditLimitBetween(
+      creditLimitBetween(
     double lower,
     double upper, {
     bool includeLower = true,
@@ -607,180 +607,177 @@ extension CreditCardModelQueryFilter
     double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'creditLimit',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-          epsilon: epsilon,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'creditLimit',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  dueDayEqualTo(int value) {
+      dueDayEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'dueDay', value: value),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'dueDay',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  dueDayGreaterThan(int value, {bool include = false}) {
+      dueDayGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'dueDay',
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'dueDay',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  dueDayLessThan(int value, {bool include = false}) {
+      dueDayLessThan(
+    int value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'dueDay',
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'dueDay',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  dueDayBetween(
+      dueDayBetween(
     int lower,
     int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'dueDay',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'dueDay',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  idEqualTo(Id value) {
+      idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'id', value: value),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'id',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  idGreaterThan(Id value, {bool include = false}) {
+      idGreaterThan(
+    Id value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'id',
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  idLessThan(Id value, {bool include = false}) {
+      idLessThan(
+    Id value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'id',
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  idBetween(
+      idBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'id',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  last4EqualTo(String value, {bool caseSensitive = true}) {
+      last4EqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(
-          property: r'last4',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'last4',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  last4GreaterThan(
+      last4GreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'last4',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'last4',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  last4LessThan(
+      last4LessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'last4',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'last4',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  last4Between(
+      last4Between(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -788,86 +785,84 @@ extension CreditCardModelQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'last4',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'last4',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  last4StartsWith(String value, {bool caseSensitive = true}) {
+      last4StartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.startsWith(
-          property: r'last4',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'last4',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  last4EndsWith(String value, {bool caseSensitive = true}) {
+      last4EndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.endsWith(
-          property: r'last4',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'last4',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  last4Contains(String value, {bool caseSensitive = true}) {
+      last4Contains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.contains(
-          property: r'last4',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'last4',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  last4Matches(String pattern, {bool caseSensitive = true}) {
+      last4Matches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.matches(
-          property: r'last4',
-          wildcard: pattern,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'last4',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  last4IsEmpty() {
+      last4IsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'last4', value: ''),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'last4',
+        value: '',
+      ));
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterFilterCondition>
-  last4IsNotEmpty() {
+      last4IsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(property: r'last4', value: ''),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'last4',
+        value: '',
+      ));
     });
   }
 }
@@ -887,7 +882,7 @@ extension CreditCardModelQuerySortBy
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterSortBy>
-  sortByAliasDesc() {
+      sortByAliasDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'alias', Sort.desc);
     });
@@ -900,35 +895,35 @@ extension CreditCardModelQuerySortBy
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterSortBy>
-  sortByBankDesc() {
+      sortByBankDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'bank', Sort.desc);
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterSortBy>
-  sortByClosingDay() {
+      sortByClosingDay() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'closingDay', Sort.asc);
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterSortBy>
-  sortByClosingDayDesc() {
+      sortByClosingDayDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'closingDay', Sort.desc);
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterSortBy>
-  sortByCreditLimit() {
+      sortByCreditLimit() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'creditLimit', Sort.asc);
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterSortBy>
-  sortByCreditLimitDesc() {
+      sortByCreditLimitDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'creditLimit', Sort.desc);
     });
@@ -941,7 +936,7 @@ extension CreditCardModelQuerySortBy
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterSortBy>
-  sortByDueDayDesc() {
+      sortByDueDayDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'dueDay', Sort.desc);
     });
@@ -954,7 +949,7 @@ extension CreditCardModelQuerySortBy
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterSortBy>
-  sortByLast4Desc() {
+      sortByLast4Desc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'last4', Sort.desc);
     });
@@ -970,7 +965,7 @@ extension CreditCardModelQuerySortThenBy
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterSortBy>
-  thenByAliasDesc() {
+      thenByAliasDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'alias', Sort.desc);
     });
@@ -983,35 +978,35 @@ extension CreditCardModelQuerySortThenBy
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterSortBy>
-  thenByBankDesc() {
+      thenByBankDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'bank', Sort.desc);
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterSortBy>
-  thenByClosingDay() {
+      thenByClosingDay() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'closingDay', Sort.asc);
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterSortBy>
-  thenByClosingDayDesc() {
+      thenByClosingDayDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'closingDay', Sort.desc);
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterSortBy>
-  thenByCreditLimit() {
+      thenByCreditLimit() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'creditLimit', Sort.asc);
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterSortBy>
-  thenByCreditLimitDesc() {
+      thenByCreditLimitDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'creditLimit', Sort.desc);
     });
@@ -1024,7 +1019,7 @@ extension CreditCardModelQuerySortThenBy
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterSortBy>
-  thenByDueDayDesc() {
+      thenByDueDayDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'dueDay', Sort.desc);
     });
@@ -1049,7 +1044,7 @@ extension CreditCardModelQuerySortThenBy
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QAfterSortBy>
-  thenByLast4Desc() {
+      thenByLast4Desc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'last4', Sort.desc);
     });
@@ -1058,31 +1053,29 @@ extension CreditCardModelQuerySortThenBy
 
 extension CreditCardModelQueryWhereDistinct
     on QueryBuilder<CreditCardModel, CreditCardModel, QDistinct> {
-  QueryBuilder<CreditCardModel, CreditCardModel, QDistinct> distinctByAlias({
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<CreditCardModel, CreditCardModel, QDistinct> distinctByAlias(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'alias', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<CreditCardModel, CreditCardModel, QDistinct> distinctByBank({
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<CreditCardModel, CreditCardModel, QDistinct> distinctByBank(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'bank', caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QDistinct>
-  distinctByClosingDay() {
+      distinctByClosingDay() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'closingDay');
     });
   }
 
   QueryBuilder<CreditCardModel, CreditCardModel, QDistinct>
-  distinctByCreditLimit() {
+      distinctByCreditLimit() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'creditLimit');
     });
@@ -1094,9 +1087,8 @@ extension CreditCardModelQueryWhereDistinct
     });
   }
 
-  QueryBuilder<CreditCardModel, CreditCardModel, QDistinct> distinctByLast4({
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<CreditCardModel, CreditCardModel, QDistinct> distinctByLast4(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'last4', caseSensitive: caseSensitive);
     });
@@ -1130,7 +1122,7 @@ extension CreditCardModelQueryProperty
   }
 
   QueryBuilder<CreditCardModel, double, QQueryOperations>
-  creditLimitProperty() {
+      creditLimitProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'creditLimit');
     });

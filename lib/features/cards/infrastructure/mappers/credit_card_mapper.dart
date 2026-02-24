@@ -5,7 +5,7 @@ import 'package:isar/isar.dart';
 class CreditCardMapper {
   CreditCardEntity toEntity(CreditCardModel model) {
     return CreditCardEntity(
-      id: model.id,
+      id: model.id.toString(),
       alias: model.alias,
       bank: model.bank,
       last4: model.last4,
@@ -16,8 +16,9 @@ class CreditCardMapper {
   }
 
   CreditCardModel toModel(CreditCardEntity entity) {
+    final parsedId = int.tryParse(entity.id);
     final model = CreditCardModel()
-      ..id = entity.id <= 0 ? Isar.autoIncrement : entity.id
+      ..id = (parsedId == null || parsedId <= 0) ? Isar.autoIncrement : parsedId
       ..alias = entity.alias
       ..bank = entity.bank
       ..last4 = entity.last4

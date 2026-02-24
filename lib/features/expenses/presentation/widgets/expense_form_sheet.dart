@@ -26,7 +26,7 @@ class _ExpenseFormSheetState extends ConsumerState<ExpenseFormSheet> {
 
   DateTime _selectedDate = DateTime.now();
   String _selectedCategory = AppConstants.expenseCategories.first;
-  int? _selectedCardId;
+  String? _selectedCardId;
   String? _receiptPath;
 
   @override
@@ -111,18 +111,18 @@ class _ExpenseFormSheetState extends ConsumerState<ExpenseFormSheet> {
                 ),
               ],
             ),
-            DropdownButtonFormField<int?>(
+            DropdownButtonFormField<String?>(
               initialValue: _selectedCardId,
               decoration: const InputDecoration(
                 labelText: 'Tarjeta de credito (opcional)',
               ),
               items: [
-                const DropdownMenuItem<int?>(
+                const DropdownMenuItem<String?>(
                   value: null,
                   child: Text('Sin tarjeta / contado'),
                 ),
                 ...widget.cards.map(
-                  (card) => DropdownMenuItem<int?>(
+                  (card) => DropdownMenuItem<String?>(
                     value: card.id,
                     child: Text(card.label),
                   ),
@@ -196,7 +196,7 @@ class _ExpenseFormSheetState extends ConsumerState<ExpenseFormSheet> {
           );
 
     final expense = ExpenseEntity(
-      id: 0,
+      id: '',
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
       category: _selectedCategory,

@@ -5,13 +5,13 @@ import 'package:isar/isar.dart';
 class ExpenseMapper {
   ExpenseEntity toEntity(ExpenseModel model) {
     return ExpenseEntity(
-      id: model.id,
+      id: model.id.toString(),
       title: model.title,
       description: model.description,
       category: model.category,
       amount: model.amount,
       incurredAt: model.incurredAt,
-      creditCardId: model.creditCardId,
+      creditCardId: model.creditCardId?.toString(),
       receiptPath: model.receiptPath,
       statementYear: model.statementYear,
       statementMonth: model.statementMonth,
@@ -19,14 +19,16 @@ class ExpenseMapper {
   }
 
   ExpenseModel toModel(ExpenseEntity entity) {
+    final parsedId = int.tryParse(entity.id);
+    final parsedCardId = int.tryParse(entity.creditCardId ?? '');
     final model = ExpenseModel()
-      ..id = entity.id <= 0 ? Isar.autoIncrement : entity.id
+      ..id = (parsedId == null || parsedId <= 0) ? Isar.autoIncrement : parsedId
       ..title = entity.title
       ..description = entity.description
       ..category = entity.category
       ..amount = entity.amount
       ..incurredAt = entity.incurredAt
-      ..creditCardId = entity.creditCardId
+      ..creditCardId = parsedCardId
       ..receiptPath = entity.receiptPath
       ..statementYear = entity.statementYear
       ..statementMonth = entity.statementMonth;

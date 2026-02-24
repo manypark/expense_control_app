@@ -39,9 +39,9 @@ Map<String, double> categoryExpenseTotals(CategoryExpenseTotalsRef ref) {
 }
 
 @riverpod
-Map<int, double> cardExpenseTotals(CardExpenseTotalsRef ref) {
+Map<String, double> cardExpenseTotals(CardExpenseTotalsRef ref) {
   final expenses = ref.watch(allExpensesProvider).valueOrNull ?? const [];
-  final result = <int, double>{};
+  final result = <String, double>{};
 
   for (final expense in expenses) {
     final cardId = expense.creditCardId;

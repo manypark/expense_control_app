@@ -12,13 +12,13 @@ class ExpenseEntity {
     required this.statementMonth,
   });
 
-  final int id;
+  final String id;
   final String title;
   final String description;
   final String category;
   final double amount;
   final DateTime incurredAt;
-  final int? creditCardId;
+  final String? creditCardId;
   final String? receiptPath;
   final int statementYear;
   final int statementMonth;

@@ -6,7 +6,7 @@ class MoneyAccountEntity {
     required this.balance,
   });
 
-  final int id;
+  final String id;
   final String code;
   final String name;
   final double balance;

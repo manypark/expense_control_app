@@ -2,6 +2,7 @@ import 'package:expense_control_app/features/analytics/presentation/screens/anal
 import 'package:expense_control_app/features/cards/presentation/screens/cards_screen.dart';
 import 'package:expense_control_app/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:expense_control_app/features/expenses/presentation/screens/expenses_screen.dart';
+import 'package:expense_control_app/shared/session_screen.dart';
 import 'package:flutter/material.dart';
 
 class AppShell extends StatefulWidget {
@@ -19,6 +20,7 @@ class _AppShellState extends State<AppShell> {
     ExpensesScreen(),
     AnalyticsScreen(),
     CardsScreen(),
+    SessionScreen(),
   ];
 
   @override
@@ -44,6 +46,10 @@ class _AppShellState extends State<AppShell> {
           NavigationDestination(
             icon: Icon(Icons.credit_card_outlined),
             label: 'Tarjetas',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outline),
+            label: 'Cuenta',
           ),
         ],
       ),
