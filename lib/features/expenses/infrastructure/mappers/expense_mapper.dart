@@ -12,7 +12,6 @@ class ExpenseMapper {
       amount: model.amount,
       incurredAt: model.incurredAt,
       creditCardId: model.creditCardId?.toString(),
-      receiptPath: model.receiptPath,
       statementYear: model.statementYear,
       statementMonth: model.statementMonth,
     );
@@ -29,7 +28,6 @@ class ExpenseMapper {
       ..amount = entity.amount
       ..incurredAt = entity.incurredAt
       ..creditCardId = parsedCardId
-      ..receiptPath = entity.receiptPath
       ..statementYear = entity.statementYear
       ..statementMonth = entity.statementMonth;
 

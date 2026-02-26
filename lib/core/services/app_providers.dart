@@ -212,7 +212,6 @@ ExpenseEntity _expenseFromJson(Map<String, dynamic> json) {
     amount: (json['amount'] as num).toDouble(),
     incurredAt: DateTime.parse(json['incurredAt'] as String),
     creditCardId: json['creditCardId'] as String?,
-    receiptPath: json['receiptUrl'] as String?,
     statementYear: json['statementYear'] as int,
     statementMonth: json['statementMonth'] as int,
   );
@@ -323,7 +322,6 @@ class ExpenseCommands extends _$ExpenseCommands {
       'category': expense.category,
       'amount': expense.amount,
       'incurredAt': expense.incurredAt.toUtc().toIso8601String(),
-      'receiptUrl': expense.receiptPath,
       'statementYear': expense.statementYear,
       'statementMonth': expense.statementMonth,
       'creditCardId': expense.creditCardId,

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:expense_control_app/core/constants/app_constants.dart';
 import 'package:expense_control_app/core/services/app_providers.dart';
 import 'package:expense_control_app/features/cards/domain/entities/credit_card.dart';
@@ -7,8 +5,6 @@ import 'package:expense_control_app/features/expenses/domain/entities/expense.da
 import 'package:expense_control_app/features/expenses/domain/usecases/save_expense_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 
 class ExpenseFormSheet extends ConsumerStatefulWidget {
   const ExpenseFormSheet({super.key, required this.cards});
@@ -27,7 +23,6 @@ class _ExpenseFormSheetState extends ConsumerState<ExpenseFormSheet> {
   DateTime _selectedDate = DateTime.now();
   String _selectedCategory = AppConstants.expenseCategories.first;
   String? _selectedCardId;
-  String? _receiptPath;
 
   @override
   void dispose() {
@@ -130,23 +125,6 @@ class _ExpenseFormSheetState extends ConsumerState<ExpenseFormSheet> {
               ],
               onChanged: (value) => setState(() => _selectedCardId = value),
             ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    _receiptPath == null
-                        ? 'Sin ticket adjunto'
-                        : 'Ticket listo para guardar',
-                  ),
-                ),
-                OutlinedButton.icon(
-                  onPressed: _pickReceiptImage,
-                  icon: const Icon(Icons.camera_alt_outlined),
-                  label: const Text('Foto'),
-                ),
-              ],
-            ),
             const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
@@ -159,24 +137,6 @@ class _ExpenseFormSheetState extends ConsumerState<ExpenseFormSheet> {
         ),
       ),
     );
-  }
-
-  Future<void> _pickReceiptImage() async {
-    final picker = ImagePicker();
-    final image = await picker.pickImage(source: ImageSource.camera);
-    if (image == null) return;
-
-    final docs = await getApplicationDocumentsDirectory();
-    final receiptsDir = Directory('${docs.path}/receipts');
-    if (!receiptsDir.existsSync()) {
-      receiptsDir.createSync(recursive: true);
-    }
-
-    final timestamp = DateTime.now().millisecondsSinceEpoch;
-    final targetPath = '${receiptsDir.path}/receipt_$timestamp.jpg';
-    await File(image.path).copy(targetPath);
-
-    setState(() => _receiptPath = targetPath);
   }
 
   Future<void> _saveExpense() async {
@@ -203,7 +163,6 @@ class _ExpenseFormSheetState extends ConsumerState<ExpenseFormSheet> {
       amount: amount,
       incurredAt: _selectedDate,
       creditCardId: _selectedCardId,
-      receiptPath: _receiptPath,
       statementYear: cycle.statementYear,
       statementMonth: cycle.statementMonth,
     );

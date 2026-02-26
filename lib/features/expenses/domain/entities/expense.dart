@@ -7,7 +7,6 @@ class ExpenseEntity {
     required this.amount,
     required this.incurredAt,
     this.creditCardId,
-    this.receiptPath,
     required this.statementYear,
     required this.statementMonth,
   });
@@ -19,7 +18,6 @@ class ExpenseEntity {
   final double amount;
   final DateTime incurredAt;
   final String? creditCardId;
-  final String? receiptPath;
   final int statementYear;
   final int statementMonth;
 }

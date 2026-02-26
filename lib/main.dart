@@ -21,7 +21,7 @@ Future<void> main() async {
 Future<String> _resolveBaseUrl() async {
   const fallback = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://10.0.2.2:3000',
+    defaultValue: 'https://expense-control-back.onrender.com',
   );
 
   try {

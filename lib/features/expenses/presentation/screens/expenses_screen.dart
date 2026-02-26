@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -77,10 +76,6 @@ class ExpensesScreen extends ConsumerWidget {
                                 ),
                             ],
                           ),
-                          onTap: expense.receiptPath == null
-                              ? null
-                              : () =>
-                                    _showReceipt(context, expense.receiptPath!),
                         ),
                       ),
                   ],
@@ -105,28 +100,6 @@ class ExpensesScreen extends ConsumerWidget {
         icon: const Icon(Icons.add),
         label: const Text('Agregar gasto'),
       ),
-    );
-  }
-
-  Future<void> _showReceipt(BuildContext context, String path) {
-    final isNetwork = path.startsWith('http://') || path.startsWith('https://');
-
-    return showDialog<void>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Ticket guardado'),
-          content: isNetwork
-              ? Image.network(path, fit: BoxFit.contain)
-              : Image.file(File(path), fit: BoxFit.contain),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cerrar'),
-            ),
-          ],
-        );
-      },
     );
   }
 }

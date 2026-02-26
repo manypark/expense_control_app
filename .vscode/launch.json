@@ -4,19 +4,28 @@
         {
             "name": "expense_control_app",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "env": {
+                "PATH": "/opt/homebrew/bin:${env:PATH}"
+            }
         },
         {
             "name": "expense_control_app (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "profile",
+            "env": {
+                "PATH": "/opt/homebrew/bin:${env:PATH}"
+            }
         },
         {
             "name": "expense_control_app (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "release",
+            "env": {
+                "PATH": "/opt/homebrew/bin:${env:PATH}"
+            }
         }
     ]
 }
