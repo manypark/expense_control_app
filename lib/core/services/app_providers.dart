@@ -1,89 +1,28 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:expense_control_app/features/cards/domain/domain.dart';
 import 'package:expense_control_app/features/dashboard/domain/domain.dart';
 import 'package:expense_control_app/features/expenses/domain/domain.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import 'auth_storage_service.dart';
+import 'http_client_service.dart';
+import 'http_client_service_impl.dart';
 
 part 'app_providers.g.dart';
 
 class AuthSession {
   const AuthSession({
     required this.token,
+    required this.refreshToken,
     required this.userId,
     required this.email,
   });
 
   final String token;
+  final String refreshToken;
   final String userId;
   final String email;
-}
-
-class ApiClient {
-  const ApiClient({required this.baseUrl});
-
-  final String baseUrl;
-
-  Future<dynamic> get(String path, {String? token}) async {
-    final response = await http.get(
-      Uri.parse('$baseUrl$path'),
-      headers: _headers(token: token),
-    );
-    return _decode(response);
-  }
-
-  Future<dynamic> post(
-    String path,
-    Map<String, dynamic> body, {
-    String? token,
-  }) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl$path'),
-      headers: _headers(token: token),
-      body: jsonEncode(body),
-    );
-    return _decode(response);
-  }
-
-  Future<dynamic> patch(
-    String path,
-    Map<String, dynamic> body, {
-    String? token,
-  }) async {
-    final response = await http.patch(
-      Uri.parse('$baseUrl$path'),
-      headers: _headers(token: token),
-      body: jsonEncode(body),
-    );
-    return _decode(response);
-  }
-
-  Future<dynamic> delete(String path, {String? token}) async {
-    final response = await http.delete(
-      Uri.parse('$baseUrl$path'),
-      headers: _headers(token: token),
-    );
-    return _decode(response);
-  }
-
-  Map<String, String> _headers({String? token}) {
-    return {
-      'Content-Type': 'application/json',
-      if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
-    };
-  }
-
-  dynamic _decode(http.Response response) {
-    final body = response.body.isEmpty ? null : jsonDecode(response.body);
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return body;
-    }
-    throw Exception('HTTP ${response.statusCode}: ${response.body}');
-  }
 }
 
 @Riverpod(keepAlive: true)
@@ -95,27 +34,36 @@ String apiBaseUrl(ApiBaseUrlRef ref) {
 }
 
 @Riverpod(keepAlive: true)
-ApiClient apiClient(ApiClientRef ref) {
+HttpClientService apiClient(ApiClientRef ref) {
   final baseUrl = ref.watch(apiBaseUrlProvider);
-  return ApiClient(baseUrl: baseUrl);
+  return HttpClientServiceImpl(baseUrl: baseUrl);
 }
 
 @riverpod
 class AuthController extends _$AuthController {
-  static const _tokenKey = 'auth_token';
-  static const _emailKey = 'auth_email';
-  static const _userIdKey = 'auth_user_id';
+  final _storage = AuthStorageService();
 
   @override
   FutureOr<AuthSession?> build() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString(_tokenKey);
-    final email = prefs.getString(_emailKey);
-    final userId = prefs.getString(_userIdKey);
+    final session = await _storage.readSession();
+    final token = session[AuthStorageService.tokenKey];
+    final refreshToken = session[AuthStorageService.refreshTokenKey];
+    final email = session[AuthStorageService.emailKey];
+    final userId = session[AuthStorageService.userIdKey];
 
-    if (token == null || email == null || userId == null) return null;
+    if (token == null ||
+        refreshToken == null ||
+        email == null ||
+        userId == null) {
+      return null;
+    }
 
-    return AuthSession(token: token, userId: userId, email: email);
+    return AuthSession(
+      token: token,
+      refreshToken: refreshToken,
+      userId: userId,
+      email: email,
+    );
   }
 
   Future<void> register(String email, String password) async {
@@ -123,10 +71,10 @@ class AuthController extends _$AuthController {
     state = await AsyncValue.guard(() async {
       final api = ref.read(apiClientProvider);
       final json =
-          await api.post('/auth/register', {
-                'email': email,
-                'password': password,
-              })
+          await api.postWithoutAuth(
+                path: '/auth/register',
+                data: {'email': email, 'password': password},
+              )
               as Map<String, dynamic>;
       return _persistSession(json);
     });
@@ -137,17 +85,17 @@ class AuthController extends _$AuthController {
     state = await AsyncValue.guard(() async {
       final api = ref.read(apiClientProvider);
       final json =
-          await api.post('/auth/login', {'email': email, 'password': password})
+          await api.postWithoutAuth(
+                path: '/auth/login',
+                data: {'email': email, 'password': password},
+              )
               as Map<String, dynamic>;
       return _persistSession(json);
     });
   }
 
   Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_tokenKey);
-    await prefs.remove(_emailKey);
-    await prefs.remove(_userIdKey);
+    await _storage.clear();
     state = const AsyncData(null);
     ref.invalidate(accountsStreamProvider);
     ref.invalidate(cardsStreamProvider);
@@ -155,18 +103,32 @@ class AuthController extends _$AuthController {
   }
 
   Future<AuthSession> _persistSession(Map<String, dynamic> json) async {
-    final token = json['accessToken'] as String;
-    final user = json['user'] as Map<String, dynamic>;
+    final token = json['accessToken'] as String?;
+    final refreshToken = json['refreshToken'] as String?;
+    final user = json['user'] as Map<String, dynamic>?;
+    final userId = user?['id'] as String?;
+    final email = user?['email'] as String?;
+
+    if (token == null ||
+        refreshToken == null ||
+        userId == null ||
+        email == null) {
+      throw Exception('Respuesta de autenticacion invalida');
+    }
+
     final session = AuthSession(
       token: token,
-      userId: user['id'] as String,
-      email: user['email'] as String,
+      refreshToken: refreshToken,
+      userId: userId,
+      email: email,
     );
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_tokenKey, session.token);
-    await prefs.setString(_emailKey, session.email);
-    await prefs.setString(_userIdKey, session.userId);
+    await _storage.saveSession(
+      accessToken: session.token,
+      refreshToken: session.refreshToken,
+      userId: session.userId,
+      email: session.email,
+    );
 
     ref.invalidate(accountsStreamProvider);
     ref.invalidate(cardsStreamProvider);
@@ -174,12 +136,6 @@ class AuthController extends _$AuthController {
 
     return session;
   }
-}
-
-String _requireToken(Ref ref) {
-  final session = ref.read(authControllerProvider).valueOrNull;
-  if (session == null) throw Exception('No hay sesion activa');
-  return session.token;
 }
 
 MoneyAccountEntity _accountFromJson(Map<String, dynamic> json) {
@@ -219,9 +175,8 @@ ExpenseEntity _expenseFromJson(Map<String, dynamic> json) {
 
 @riverpod
 Future<List<MoneyAccountEntity>> accountsStream(AccountsStreamRef ref) async {
-  final token = _requireToken(ref);
   final api = ref.read(apiClientProvider);
-  final list = await api.get('/accounts', token: token) as List<dynamic>;
+  final list = await api.get(path: '/accounts') as List<dynamic>;
   return list
       .map((item) => _accountFromJson(item as Map<String, dynamic>))
       .toList(growable: false);
@@ -233,7 +188,6 @@ class AccountCommands extends _$AccountCommands {
   void build() {}
 
   Future<void> upsertAccount(MoneyAccountEntity account) async {
-    final token = _requireToken(ref);
     final api = ref.read(apiClientProvider);
 
     final body = {
@@ -243,27 +197,25 @@ class AccountCommands extends _$AccountCommands {
     };
 
     if (account.id.isEmpty) {
-      await api.post('/accounts', body, token: token);
+      await api.post(path: '/accounts', data: body);
     } else {
-      await api.patch('/accounts/${account.id}', body, token: token);
+      await api.put(path: '/accounts/${account.id}', data: body);
     }
 
     ref.invalidate(accountsStreamProvider);
   }
 
   Future<void> deleteAccount(String accountId) async {
-    final token = _requireToken(ref);
     final api = ref.read(apiClientProvider);
-    await api.delete('/accounts/$accountId', token: token);
+    await api.delete(path: '/accounts/$accountId');
     ref.invalidate(accountsStreamProvider);
   }
 }
 
 @riverpod
 Future<List<CreditCardEntity>> cardsStream(CardsStreamRef ref) async {
-  final token = _requireToken(ref);
   final api = ref.read(apiClientProvider);
-  final list = await api.get('/cards', token: token) as List<dynamic>;
+  final list = await api.get(path: '/cards') as List<dynamic>;
   return list
       .map((item) => _cardFromJson(item as Map<String, dynamic>))
       .toList(growable: false);
@@ -275,7 +227,6 @@ class CardCommands extends _$CardCommands {
   void build() {}
 
   Future<void> saveCard(CreditCardEntity card) async {
-    final token = _requireToken(ref);
     final api = ref.read(apiClientProvider);
 
     final body = {
@@ -288,9 +239,9 @@ class CardCommands extends _$CardCommands {
     };
 
     if (card.id.isEmpty) {
-      await api.post('/cards', body, token: token);
+      await api.post(path: '/cards', data: body);
     } else {
-      await api.patch('/cards/${card.id}', body, token: token);
+      await api.put(path: '/cards/${card.id}', data: body);
     }
 
     ref.invalidate(cardsStreamProvider);
@@ -299,9 +250,8 @@ class CardCommands extends _$CardCommands {
 
 @riverpod
 Future<List<ExpenseEntity>> expensesStream(ExpensesStreamRef ref) async {
-  final token = _requireToken(ref);
   final api = ref.read(apiClientProvider);
-  final list = await api.get('/expenses', token: token) as List<dynamic>;
+  final list = await api.get(path: '/expenses') as List<dynamic>;
   return list
       .map((item) => _expenseFromJson(item as Map<String, dynamic>))
       .toList(growable: false);
@@ -313,7 +263,6 @@ class ExpenseCommands extends _$ExpenseCommands {
   void build() {}
 
   Future<void> saveExpense(ExpenseEntity expense) async {
-    final token = _requireToken(ref);
     final api = ref.read(apiClientProvider);
 
     final body = {
@@ -328,9 +277,9 @@ class ExpenseCommands extends _$ExpenseCommands {
     };
 
     if (expense.id.isEmpty) {
-      await api.post('/expenses', body, token: token);
+      await api.post(path: '/expenses', data: body);
     } else {
-      await api.patch('/expenses/${expense.id}', body, token: token);
+      await api.put(path: '/expenses/${expense.id}', data: body);
     }
 
     ref.invalidate(expensesStreamProvider);

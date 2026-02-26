@@ -20,11 +20,11 @@ final apiBaseUrlProvider = Provider<String>.internal(
 );
 
 typedef ApiBaseUrlRef = ProviderRef<String>;
-String _$apiClientHash() => r'483fc729f737a595c5c5de410b71905eb575fce5';
+String _$apiClientHash() => r'219d8d073257ec50554a9820cc78a1f6a619b347';
 
 /// See also [apiClient].
 @ProviderFor(apiClient)
-final apiClientProvider = Provider<ApiClient>.internal(
+final apiClientProvider = Provider<HttpClientService>.internal(
   apiClient,
   name: r'apiClientProvider',
   debugGetCreateSourceHash:
@@ -33,8 +33,8 @@ final apiClientProvider = Provider<ApiClient>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef ApiClientRef = ProviderRef<ApiClient>;
-String _$accountsStreamHash() => r'348d3e6f8d70a22f5b75be89b4ec5bf2d435bd7a';
+typedef ApiClientRef = ProviderRef<HttpClientService>;
+String _$accountsStreamHash() => r'5fa1c0eb0683773de317cde35d3421a43a8e233c';
 
 /// See also [accountsStream].
 @ProviderFor(accountsStream)
@@ -51,7 +51,7 @@ final accountsStreamProvider =
 
 typedef AccountsStreamRef
     = AutoDisposeFutureProviderRef<List<MoneyAccountEntity>>;
-String _$cardsStreamHash() => r'4b456e8d7f2a3b590fbfd00f197c86033abf6642';
+String _$cardsStreamHash() => r'978ae9013895f240d6ee2641224b875c421b1720';
 
 /// See also [cardsStream].
 @ProviderFor(cardsStream)
@@ -66,7 +66,7 @@ final cardsStreamProvider =
 );
 
 typedef CardsStreamRef = AutoDisposeFutureProviderRef<List<CreditCardEntity>>;
-String _$expensesStreamHash() => r'48eb2f69670ad1b097f8f61aaf97791615148f77';
+String _$expensesStreamHash() => r'21bb0ad4b7ed4b97eef60607b415c2c7ddf2861e';
 
 /// See also [expensesStream].
 @ProviderFor(expensesStream)
@@ -82,7 +82,7 @@ final expensesStreamProvider =
 );
 
 typedef ExpensesStreamRef = AutoDisposeFutureProviderRef<List<ExpenseEntity>>;
-String _$authControllerHash() => r'8d1fb800024b7742f70943415833c68337c8949a';
+String _$authControllerHash() => r'07ff0bca9c8f102645751c78ef12b239cf7294b9';
 
 /// See also [AuthController].
 @ProviderFor(AuthController)
@@ -98,7 +98,7 @@ final authControllerProvider =
 );
 
 typedef _$AuthController = AutoDisposeAsyncNotifier<AuthSession?>;
-String _$accountCommandsHash() => r'440f1543f4dd64fc0646cd75394f067e29a0ba75';
+String _$accountCommandsHash() => r'b80c90c88cbfce2a99a0f5273831facbc3b2bbaf';
 
 /// See also [AccountCommands].
 @ProviderFor(AccountCommands)
@@ -114,7 +114,7 @@ final accountCommandsProvider =
 );
 
 typedef _$AccountCommands = AutoDisposeNotifier<void>;
-String _$cardCommandsHash() => r'5971db9ef4b31e35abf5bf02a8a2b37a67008a8f';
+String _$cardCommandsHash() => r'0a0d5cac4a211c8e25ca8d0c3fb9dca4c7013b25';
 
 /// See also [CardCommands].
 @ProviderFor(CardCommands)
@@ -129,7 +129,7 @@ final cardCommandsProvider =
 );
 
 typedef _$CardCommands = AutoDisposeNotifier<void>;
-String _$expenseCommandsHash() => r'53b23c3a66e63c6781df7868610c9341bba030cb';
+String _$expenseCommandsHash() => r'5f94e325b976dc197a92557e49b0c25e33746701';
 
 /// See also [ExpenseCommands].
 @ProviderFor(ExpenseCommands)

@@ -22,7 +22,17 @@ class DashboardScreen extends ConsumerWidget {
           return CustomScrollView(
             physics: const ClampingScrollPhysics(),
             slivers: [
-              const SliverAppBar(pinned: true),
+              SliverAppBar(
+                pinned: true,
+                title: const Text('Inicio'),
+                actions: [
+                  IconButton(
+                    onPressed: () => _showAccountForm(context, ref),
+                    icon: const Icon(Icons.add),
+                    tooltip: 'Agregar cuenta',
+                  ),
+                ],
+              ),
               SliverPadding(
                 padding: const EdgeInsets.all(16),
                 sliver: SliverList.list(
@@ -93,11 +103,6 @@ class DashboardScreen extends ConsumerWidget {
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => Center(child: Text('Error: $error')),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showAccountForm(context, ref),
-        icon: const Icon(Icons.add),
-        label: const Text('Agregar cuenta'),
       ),
     );
   }
