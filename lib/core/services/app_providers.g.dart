@@ -98,6 +98,23 @@ final globalLoadingProvider =
 );
 
 typedef _$GlobalLoading = AutoDisposeNotifier<bool>;
+String _$totalAmountVisibilityHash() =>
+    r'9c8c8cba8b60330550cdf185a8e2e2c87bdacf52';
+
+/// See also [TotalAmountVisibility].
+@ProviderFor(TotalAmountVisibility)
+final totalAmountVisibilityProvider =
+    AutoDisposeAsyncNotifierProvider<TotalAmountVisibility, bool>.internal(
+  TotalAmountVisibility.new,
+  name: r'totalAmountVisibilityProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$totalAmountVisibilityHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$TotalAmountVisibility = AutoDisposeAsyncNotifier<bool>;
 String _$authControllerHash() => r'07ff0bca9c8f102645751c78ef12b239cf7294b9';
 
 /// See also [AuthController].

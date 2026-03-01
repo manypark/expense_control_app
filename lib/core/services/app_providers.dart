@@ -4,6 +4,7 @@ import 'package:expense_control_app/features/cards/domain/domain.dart';
 import 'package:expense_control_app/features/dashboard/domain/domain.dart';
 import 'package:expense_control_app/features/expenses/domain/domain.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'auth_storage_service.dart';
 import 'http_client_service.dart';
@@ -33,6 +34,25 @@ class GlobalLoading extends _$GlobalLoading {
   void start() => state = true;
 
   void stop() => state = false;
+}
+
+@riverpod
+class TotalAmountVisibility extends _$TotalAmountVisibility {
+  static const _key = 'total_amount_visible';
+
+  @override
+  FutureOr<bool> build() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_key) ?? true;
+  }
+
+  Future<void> toggle() async {
+    final current = state.valueOrNull ?? true;
+    final next = !current;
+    state = AsyncData(next);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_key, next);
+  }
 }
 
 @Riverpod(keepAlive: true)

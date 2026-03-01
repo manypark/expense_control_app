@@ -14,6 +14,8 @@ class DashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final accountsAsync = ref.watch(dashboardAccountsProvider);
     final total = ref.watch(totalMoneyProvider);
+    final totalVisibilityAsync = ref.watch(totalAmountVisibilityProvider);
+    final isTotalVisible = totalVisibilityAsync.valueOrNull ?? true;
     final currency = NumberFormat.currency(locale: 'es_MX', symbol: r'$');
 
     return Scaffold(
@@ -37,16 +39,36 @@ class DashboardScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(16),
                 sliver: SliverList.list(
                   children: [
-                    const Text(
-                      'Total disponible',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    Row(
+                      children: [
+                        const Text(
+                          'Total disponible',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        IconButton(
+                          onPressed: () {
+                            ref
+                                .read(totalAmountVisibilityProvider.notifier)
+                                .toggle();
+                          },
+                          icon: Icon(
+                            isTotalVisible
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                          ),
+                          tooltip: isTotalVisible
+                              ? 'Ocultar monto'
+                              : 'Mostrar monto',
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      currency.format(total),
+                      isTotalVisible ? currency.format(total) : r'$***.***',
                       style: const TextStyle(
                         fontSize: 34,
                         fontWeight: FontWeight.bold,
