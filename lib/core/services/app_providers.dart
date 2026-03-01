@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:expense_control_app/features/cards/domain/domain.dart';
 import 'package:expense_control_app/features/dashboard/domain/domain.dart';
 import 'package:expense_control_app/features/expenses/domain/domain.dart';
+import 'package:expense_control_app/features/bills/domain/domain.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -130,6 +131,7 @@ class AuthController extends _$AuthController {
     ref.invalidate(accountsStreamProvider);
     ref.invalidate(cardsStreamProvider);
     ref.invalidate(expensesStreamProvider);
+    ref.invalidate(billsStreamProvider);
   }
 
   Future<AuthSession> _persistSession(Map<String, dynamic> json) async {
@@ -163,6 +165,7 @@ class AuthController extends _$AuthController {
     ref.invalidate(accountsStreamProvider);
     ref.invalidate(cardsStreamProvider);
     ref.invalidate(expensesStreamProvider);
+    ref.invalidate(billsStreamProvider);
 
     return session;
   }
@@ -293,6 +296,24 @@ Future<List<ExpenseEntity>> expensesStream(ExpensesStreamRef ref) async {
       .toList(growable: false);
 }
 
+BillEntity _billFromJson(Map<String, dynamic> json) {
+  return BillEntity(
+    id: json['id'] as String,
+    title: json['title'] as String,
+    dueDate: DateTime.parse(json['dueDate'] as String),
+    isPaid: json['isPaid'] as bool,
+  );
+}
+
+@riverpod
+Future<List<BillEntity>> billsStream(BillsStreamRef ref) async {
+  final api = ref.read(apiClientProvider);
+  final list = await api.get(path: '/bills') as List<dynamic>;
+  return list
+      .map((item) => _billFromJson(item as Map<String, dynamic>))
+      .toList(growable: false);
+}
+
 @riverpod
 class ExpenseCommands extends _$ExpenseCommands {
   @override
@@ -325,5 +346,41 @@ class ExpenseCommands extends _$ExpenseCommands {
     } finally {
       loading.stop();
     }
+  }
+}
+
+@riverpod
+class BillCommands extends _$BillCommands {
+  @override
+  void build() {}
+
+  Future<void> saveBill(BillEntity bill) async {
+    final api = ref.read(apiClientProvider);
+    final loading = ref.read(globalLoadingProvider.notifier);
+    loading.start();
+
+    try {
+      final body = {
+        'title': bill.title,
+        'dueDate': bill.dueDate.toUtc().toIso8601String(),
+        'isPaid': bill.isPaid,
+      };
+
+      if (bill.id.isEmpty) {
+        await api.post(path: '/bills', data: body);
+      } else {
+        await api.put(path: '/bills/${bill.id}', data: body);
+      }
+
+      ref.invalidate(billsStreamProvider);
+    } finally {
+      loading.stop();
+    }
+  }
+
+  Future<void> deleteBill(String billId) async {
+    final api = ref.read(apiClientProvider);
+    await api.delete(path: '/bills/$billId');
+    ref.invalidate(billsStreamProvider);
   }
 }

@@ -1,4 +1,5 @@
 import 'package:expense_control_app/features/analytics/presentation/screens/analytics_screen.dart';
+import 'package:expense_control_app/features/bills/presentation/screens/bills_screen.dart';
 import 'package:expense_control_app/features/cards/presentation/screens/cards_screen.dart';
 import 'package:expense_control_app/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:expense_control_app/features/expenses/presentation/screens/expenses_screen.dart';
@@ -18,6 +19,7 @@ class _AppShellState extends State<AppShell> {
   final _pages = const [
     DashboardScreen(),
     ExpensesScreen(),
+    BillsScreen(),
     AnalyticsScreen(),
     CardsScreen(),
     SessionScreen(),
@@ -41,6 +43,10 @@ class _AppShellState extends State<AppShell> {
           ),
           NavigationDestination(
             icon: Icon(Icons.bar_chart_outlined),
+            label: 'Servicios',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.analytics_outlined),
             label: 'Analitica',
           ),
           NavigationDestination(

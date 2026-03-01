@@ -82,6 +82,21 @@ final expensesStreamProvider =
 );
 
 typedef ExpensesStreamRef = AutoDisposeFutureProviderRef<List<ExpenseEntity>>;
+String _$billsStreamHash() => r'db6d3b22e69e935961708d0e3e5da66dcc7d0cee';
+
+/// See also [billsStream].
+@ProviderFor(billsStream)
+final billsStreamProvider =
+    AutoDisposeFutureProvider<List<BillEntity>>.internal(
+  billsStream,
+  name: r'billsStreamProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$billsStreamHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef BillsStreamRef = AutoDisposeFutureProviderRef<List<BillEntity>>;
 String _$globalLoadingHash() => r'e2821344b7857b626c571aeb1a58599f427c1e0a';
 
 /// See also [GlobalLoading].
@@ -115,7 +130,7 @@ final totalAmountVisibilityProvider =
 );
 
 typedef _$TotalAmountVisibility = AutoDisposeAsyncNotifier<bool>;
-String _$authControllerHash() => r'07ff0bca9c8f102645751c78ef12b239cf7294b9';
+String _$authControllerHash() => r'd89c43342221513d5e91409654ebc2e54082495e';
 
 /// See also [AuthController].
 @ProviderFor(AuthController)
@@ -178,5 +193,20 @@ final expenseCommandsProvider =
 );
 
 typedef _$ExpenseCommands = AutoDisposeNotifier<void>;
+String _$billCommandsHash() => r'ea8ea97eaf33d00ae20c6075103553366d81e303';
+
+/// See also [BillCommands].
+@ProviderFor(BillCommands)
+final billCommandsProvider =
+    AutoDisposeNotifierProvider<BillCommands, void>.internal(
+  BillCommands.new,
+  name: r'billCommandsProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$billCommandsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$BillCommands = AutoDisposeNotifier<void>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
