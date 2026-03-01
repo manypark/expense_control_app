@@ -34,6 +34,8 @@ class _ExpenseFormSheetState extends ConsumerState<ExpenseFormSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final isSaving = ref.watch(globalLoadingProvider);
+
     return Padding(
       padding: EdgeInsets.only(
         left: 16,
@@ -91,7 +93,9 @@ class _ExpenseFormSheetState extends ConsumerState<ExpenseFormSheet> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () async {
+                  onPressed: isSaving
+                      ? null
+                      : () async {
                     final picked = await showDatePicker(
                       context: context,
                       firstDate: DateTime(2020),
@@ -123,14 +127,16 @@ class _ExpenseFormSheetState extends ConsumerState<ExpenseFormSheet> {
                   ),
                 ),
               ],
-              onChanged: (value) => setState(() => _selectedCardId = value),
+              onChanged: isSaving
+                  ? null
+                  : (value) => setState(() => _selectedCardId = value),
             ),
             const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
               child: FilledButton(
-                onPressed: _saveExpense,
-                child: const Text('Guardar gasto'),
+                onPressed: isSaving ? null : _saveExpense,
+                child: Text(isSaving ? 'Cargando...' : 'Guardar gasto'),
               ),
             ),
           ],
@@ -167,9 +173,17 @@ class _ExpenseFormSheetState extends ConsumerState<ExpenseFormSheet> {
       statementMonth: cycle.statementMonth,
     );
 
-    await ref.read(expenseCommandsProvider.notifier).saveExpense(expense);
-    if (mounted) {
-      Navigator.of(context).pop();
+    try {
+      await ref.read(expenseCommandsProvider.notifier).saveExpense(expense);
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Hubo un error al guardar el gasto.')),
+        );
+      }
     }
   }
 }

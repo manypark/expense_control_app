@@ -122,66 +122,93 @@ class DashboardScreen extends ConsumerWidget {
       context: context,
       isScrollControlled: true,
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            top: 16,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                account == null ? 'Nueva cuenta' : 'Editar cuenta',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
+        return Consumer(
+          builder: (context, modalRef, _) {
+            final isSaving = modalRef.watch(globalLoadingProvider);
+            return Padding(
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 16,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 16,
               ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(labelText: 'Nombre visible'),
-              ),
-              TextField(
-                controller: codeController,
-                decoration: const InputDecoration(
-                  labelText: 'Codigo interno (unico)',
-                ),
-              ),
-              TextField(
-                controller: balanceController,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                decoration: const InputDecoration(labelText: 'Monto actual'),
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: () async {
-                    final entity = MoneyAccountEntity(
-                      id: account?.id ?? '',
-                      code: codeController.text.trim(),
-                      name: nameController.text.trim(),
-                      balance:
-                          double.tryParse(balanceController.text.trim()) ?? 0,
-                    );
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    account == null ? 'Nueva cuenta' : 'Editar cuenta',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: nameController,
+                    enabled: !isSaving,
+                    decoration: const InputDecoration(
+                      labelText: 'Nombre visible',
+                    ),
+                  ),
+                  TextField(
+                    controller: codeController,
+                    enabled: !isSaving,
+                    decoration: const InputDecoration(
+                      labelText: 'Codigo interno (unico)',
+                    ),
+                  ),
+                  TextField(
+                    controller: balanceController,
+                    enabled: !isSaving,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    decoration: const InputDecoration(labelText: 'Monto actual'),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      onPressed: isSaving
+                          ? null
+                          : () async {
+                              try {
+                                final entity = MoneyAccountEntity(
+                                  id: account?.id ?? '',
+                                  code: codeController.text.trim(),
+                                  name: nameController.text.trim(),
+                                  balance:
+                                      double.tryParse(
+                                        balanceController.text.trim(),
+                                      ) ??
+                                      0,
+                                );
 
-                    await ref
-                        .read(accountCommandsProvider.notifier)
-                        .upsertAccount(entity);
-                    if (context.mounted) {
-                      Navigator.of(context).pop();
-                    }
-                  },
-                  child: const Text('Guardar'),
-                ),
+                                await ref
+                                    .read(accountCommandsProvider.notifier)
+                                    .upsertAccount(entity);
+                                if (context.mounted) {
+                                  Navigator.of(context).pop();
+                                }
+                              } catch (_) {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Hubo un error al guardar la cuenta.',
+                                      ),
+                                    ),
+                                  );
+                                }
+                              }
+                            },
+                      child: Text(isSaving ? 'Cargando...' : 'Guardar'),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );

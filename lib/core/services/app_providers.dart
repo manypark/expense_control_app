@@ -25,6 +25,16 @@ class AuthSession {
   final String email;
 }
 
+@riverpod
+class GlobalLoading extends _$GlobalLoading {
+  @override
+  bool build() => false;
+
+  void start() => state = true;
+
+  void stop() => state = false;
+}
+
 @Riverpod(keepAlive: true)
 String apiBaseUrl(ApiBaseUrlRef ref) {
   return const String.fromEnvironment(
@@ -189,20 +199,26 @@ class AccountCommands extends _$AccountCommands {
 
   Future<void> upsertAccount(MoneyAccountEntity account) async {
     final api = ref.read(apiClientProvider);
+    final loading = ref.read(globalLoadingProvider.notifier);
+    loading.start();
 
-    final body = {
-      'code': account.code,
-      'name': account.name,
-      'balance': account.balance,
-    };
+    try {
+      final body = {
+        'code': account.code,
+        'name': account.name,
+        'balance': account.balance,
+      };
 
-    if (account.id.isEmpty) {
-      await api.post(path: '/accounts', data: body);
-    } else {
-      await api.put(path: '/accounts/${account.id}', data: body);
+      if (account.id.isEmpty) {
+        await api.post(path: '/accounts', data: body);
+      } else {
+        await api.put(path: '/accounts/${account.id}', data: body);
+      }
+
+      ref.invalidate(accountsStreamProvider);
+    } finally {
+      loading.stop();
     }
-
-    ref.invalidate(accountsStreamProvider);
   }
 
   Future<void> deleteAccount(String accountId) async {
@@ -264,24 +280,30 @@ class ExpenseCommands extends _$ExpenseCommands {
 
   Future<void> saveExpense(ExpenseEntity expense) async {
     final api = ref.read(apiClientProvider);
+    final loading = ref.read(globalLoadingProvider.notifier);
+    loading.start();
 
-    final body = {
-      'title': expense.title,
-      'description': expense.description,
-      'category': expense.category,
-      'amount': expense.amount,
-      'incurredAt': expense.incurredAt.toUtc().toIso8601String(),
-      'statementYear': expense.statementYear,
-      'statementMonth': expense.statementMonth,
-      'creditCardId': expense.creditCardId,
-    };
+    try {
+      final body = {
+        'title': expense.title,
+        'description': expense.description,
+        'category': expense.category,
+        'amount': expense.amount,
+        'incurredAt': expense.incurredAt.toUtc().toIso8601String(),
+        'statementYear': expense.statementYear,
+        'statementMonth': expense.statementMonth,
+        'creditCardId': expense.creditCardId,
+      };
 
-    if (expense.id.isEmpty) {
-      await api.post(path: '/expenses', data: body);
-    } else {
-      await api.put(path: '/expenses/${expense.id}', data: body);
+      if (expense.id.isEmpty) {
+        await api.post(path: '/expenses', data: body);
+      } else {
+        await api.put(path: '/expenses/${expense.id}', data: body);
+      }
+
+      ref.invalidate(expensesStreamProvider);
+    } finally {
+      loading.stop();
     }
-
-    ref.invalidate(expensesStreamProvider);
   }
 }

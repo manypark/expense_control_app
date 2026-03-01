@@ -82,6 +82,22 @@ final expensesStreamProvider =
 );
 
 typedef ExpensesStreamRef = AutoDisposeFutureProviderRef<List<ExpenseEntity>>;
+String _$globalLoadingHash() => r'e2821344b7857b626c571aeb1a58599f427c1e0a';
+
+/// See also [GlobalLoading].
+@ProviderFor(GlobalLoading)
+final globalLoadingProvider =
+    AutoDisposeNotifierProvider<GlobalLoading, bool>.internal(
+  GlobalLoading.new,
+  name: r'globalLoadingProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$globalLoadingHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$GlobalLoading = AutoDisposeNotifier<bool>;
 String _$authControllerHash() => r'07ff0bca9c8f102645751c78ef12b239cf7294b9';
 
 /// See also [AuthController].
@@ -98,7 +114,7 @@ final authControllerProvider =
 );
 
 typedef _$AuthController = AutoDisposeAsyncNotifier<AuthSession?>;
-String _$accountCommandsHash() => r'b80c90c88cbfce2a99a0f5273831facbc3b2bbaf';
+String _$accountCommandsHash() => r'1c5e9ffd1f2e773a1765537c0fc9c966550cbb55';
 
 /// See also [AccountCommands].
 @ProviderFor(AccountCommands)
@@ -129,7 +145,7 @@ final cardCommandsProvider =
 );
 
 typedef _$CardCommands = AutoDisposeNotifier<void>;
-String _$expenseCommandsHash() => r'5f94e325b976dc197a92557e49b0c25e33746701';
+String _$expenseCommandsHash() => r'f715cd7549b64f3091ff9cc7dcd870be454440aa';
 
 /// See also [ExpenseCommands].
 @ProviderFor(ExpenseCommands)
