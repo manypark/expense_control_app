@@ -1,10 +1,8 @@
-import 'package:intl/intl.dart';
+import 'package:expense_control_app/features/cards/presentation/providers/cards_providers.dart';
+import 'package:expense_control_app/features/expenses/presentation/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:expense_control_app/features/cards/presentation/providers/cards_providers.dart';
-import 'package:expense_control_app/features/expenses/presentation/widgets/expense_form_sheet.dart';
-import 'package:expense_control_app/features/expenses/presentation/providers/expenses_providers.dart';
+import 'package:intl/intl.dart';
 
 class ExpensesScreen extends ConsumerWidget {
   const ExpensesScreen({super.key});
@@ -26,7 +24,7 @@ class ExpensesScreen extends ConsumerWidget {
                 SliverAppBar(pinned: true, title: Text('Gastos')),
                 SliverFillRemaining(
                   hasScrollBody: false,
-                  child: Center(child: Text('Aun no hay gastos registrados')),
+                  child: Center(child: EmptyExpensesText()),
                 ),
               ],
             );
@@ -43,63 +41,44 @@ class ExpensesScreen extends ConsumerWidget {
               const SliverAppBar(pinned: true, title: Text('Gastos')),
               SliverPadding(
                 padding: const EdgeInsets.all(16),
-                sliver: SliverList.list(
-                  children: [
-                    Card(
-                      child: ListTile(
-                        title: const Text('Gasto del corte actual de tarjetas'),
-                        subtitle: const Text(
-                          'Este monto depende del dia de cierre configurado por tarjeta',
-                        ),
-                        trailing: Text(currency.format(statementTotal)),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      StatementTotalCard(
+                        totalText: currency.format(statementTotal),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    for (final expense in expenses)
-                      Card(
-                        child: ListTile(
-                          title: Text(expense.title),
-                          subtitle: Text(
-                            '${expense.category} | ${DateFormat('dd/MM/yyyy').format(expense.incurredAt)}\n${expense.description}',
-                          ),
-                          isThreeLine: true,
-                          trailing: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(currency.format(expense.amount)),
-                              if (expense.creditCardId != null)
-                                Text(
-                                  cardsById[expense.creditCardId!]?.label ??
-                                      'Tarjeta',
-                                  style: const TextStyle(fontSize: 11),
-                                ),
-                            ],
-                          ),
-                        ),
-                      ),
-                  ],
+                      const SizedBox(height: 8),
+                    ],
+                  ),
                 ),
               ),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                sliver: ExpensesSliverList(
+                  expenses: expenses,
+                  cardsById: cardsById,
+                  currency: currency,
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 16)),
             ],
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => Center(child: Text('Error: $error')),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          final cards =
-              ref.read(availableCardsProvider).valueOrNull ?? const [];
-          showModalBottomSheet<void>(
-            context: context,
-            isScrollControlled: true,
-            builder: (_) => ExpenseFormSheet(cards: cards),
-          );
-        },
-        icon: const Icon(Icons.add),
-        label: const Text('Agregar gasto'),
+      floatingActionButton: AddExpenseFab(
+        onPressed: () => _openExpenseForm(context, ref),
       ),
+    );
+  }
+
+  void _openExpenseForm(BuildContext context, WidgetRef ref) {
+    final cards = ref.read(availableCardsProvider).valueOrNull ?? const [];
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => ExpenseFormSheet(cards: cards),
     );
   }
 }
