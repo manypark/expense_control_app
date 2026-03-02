@@ -8,8 +8,16 @@ part 'bills_providers.g.dart';
 enum BillDueStatus { green, yellow, red }
 
 @riverpod
-Future<List<BillEntity>> allBills(AllBillsRef ref) {
-  return ref.watch(billsStreamProvider.future);
+Future<List<BillEntity>> allBills(AllBillsRef ref) async {
+  final bills = await ref.watch(billsStreamProvider.future);
+  final ordered = [...bills];
+  ordered.sort((a, b) {
+    if (a.isPaid != b.isPaid) {
+      return a.isPaid ? -1 : 1;
+    }
+    return a.dueDate.compareTo(b.dueDate);
+  });
+  return ordered;
 }
 
 @riverpod
