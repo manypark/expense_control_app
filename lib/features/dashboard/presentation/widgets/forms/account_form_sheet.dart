@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:expense_control_app/core/services/app_providers.dart';
 import 'package:expense_control_app/features/dashboard/domain/entities/entities.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +39,8 @@ class _AccountFormSheetState extends ConsumerState<AccountFormSheet> {
   @override
   Widget build(BuildContext context) {
     final isSaving = ref.watch(globalLoadingProvider);
+    final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+    final title = widget.account == null ? 'Nueva cuenta' : 'Editar cuenta';
 
     return Padding(
       padding: EdgeInsets.only(
@@ -49,36 +52,56 @@ class _AccountFormSheetState extends ConsumerState<AccountFormSheet> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            widget.account == null ? 'Nueva cuenta' : 'Editar cuenta',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.close),
+                tooltip: 'Cerrar',
+              ),
+            ],
           ),
           const SizedBox(height: 12),
-          TextField(
+          _AdaptiveField(
             controller: _nameController,
             enabled: !isSaving,
-            decoration: const InputDecoration(labelText: 'Nombre visible'),
+            label: 'Nombre visible',
+            isIOS: isIOS,
           ),
-          TextField(
+          _AdaptiveField(
             controller: _codeController,
             enabled: !isSaving,
-            decoration: const InputDecoration(
-              labelText: 'Codigo interno (unico)',
-            ),
+            label: 'Codigo interno (unico)',
+            isIOS: isIOS,
           ),
-          TextField(
+          _AdaptiveField(
             controller: _balanceController,
             enabled: !isSaving,
+            label: 'Monto actual',
+            isIOS: isIOS,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: const InputDecoration(labelText: 'Monto actual'),
           ),
           const SizedBox(height: 12),
           SizedBox(
             width: double.infinity,
-            child: FilledButton(
-              onPressed: isSaving ? null : _save,
-              child: Text(isSaving ? 'Cargando...' : 'Guardar'),
-            ),
+            child: isIOS
+                ? CupertinoButton.filled(
+                    onPressed: isSaving ? null : _save,
+                    child: Text(isSaving ? 'Cargando...' : 'Guardar'),
+                  )
+                : FilledButton(
+                    onPressed: isSaving ? null : _save,
+                    child: Text(isSaving ? 'Cargando...' : 'Guardar'),
+                  ),
           ),
         ],
       ),
@@ -108,5 +131,43 @@ class _AccountFormSheetState extends ConsumerState<AccountFormSheet> {
             ),
           );
         });
+  }
+}
+
+class _AdaptiveField extends StatelessWidget {
+  const _AdaptiveField({
+    required this.controller,
+    required this.enabled,
+    required this.label,
+    required this.isIOS,
+    this.keyboardType,
+  });
+
+  final TextEditingController controller;
+  final bool enabled;
+  final String label;
+  final bool isIOS;
+  final TextInputType? keyboardType;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isIOS) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: CupertinoTextField(
+          controller: controller,
+          enabled: enabled,
+          keyboardType: keyboardType,
+          placeholder: label,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        ),
+      );
+    }
+    return TextField(
+      controller: controller,
+      enabled: enabled,
+      keyboardType: keyboardType,
+      decoration: InputDecoration(labelText: label),
+    );
   }
 }
