@@ -7,7 +7,7 @@ class ExpenseControlApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Exp - Ctrl',
+      title: 'Exp Control App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(colorSchemeSeed: Colors.teal, useMaterial3: true),
       scrollBehavior: const AppScrollBehavior(),
