@@ -18,11 +18,21 @@ class CardsScreen extends ConsumerWidget {
       body: cardsAsync.when(
         data: (cards) {
           if (cards.isEmpty) {
-            return const CustomScrollView(
-              physics: ClampingScrollPhysics(),
+            return CustomScrollView(
+              physics: const ClampingScrollPhysics(),
               slivers: [
-                SliverAppBar(pinned: true, title: Text('Tarjetas')),
-                SliverFillRemaining(
+                SliverAppBar(
+                  pinned: true,
+                  title: const Text('Tarjetas'),
+                  actions: [
+                    IconButton(
+                      onPressed: () => _showCardForm(context, ref),
+                      icon: const Icon(Icons.add),
+                      tooltip: 'Agregar tarjeta',
+                    ),
+                  ],
+                ),
+                const SliverFillRemaining(
                   hasScrollBody: false,
                   child: Center(child: Text('No hay tarjetas registradas')),
                 ),
@@ -33,7 +43,17 @@ class CardsScreen extends ConsumerWidget {
           return CustomScrollView(
             physics: const ClampingScrollPhysics(),
             slivers: [
-              const SliverAppBar(pinned: true, title: Text('Tarjetas')),
+              SliverAppBar(
+                pinned: true,
+                title: const Text('Tarjetas'),
+                actions: [
+                  IconButton(
+                    onPressed: () => _showCardForm(context, ref),
+                    icon: const Icon(Icons.add),
+                    tooltip: 'Agregar tarjeta',
+                  ),
+                ],
+              ),
               SliverPadding(
                 padding: const EdgeInsets.all(16),
                 sliver: SliverList.list(
@@ -57,11 +77,6 @@ class CardsScreen extends ConsumerWidget {
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => Center(child: Text('Error: $error')),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showCardForm(context, ref),
-        icon: const Icon(Icons.add),
-        label: const Text('Agregar tarjeta'),
       ),
     );
   }

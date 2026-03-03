@@ -14,10 +14,12 @@ class DashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final total = ref.watch(totalMoneyProvider);
     final accountsAsync = ref.watch(dashboardAccountsProvider);
+    final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
     final currency = NumberFormat.currency(locale: 'es_MX', symbol: r'$');
     final isTotalVisible =
         ref.watch(totalAmountVisibilityProvider).valueOrNull ?? true;
-    final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+    final height = MediaQuery.of(context).size.height;
+
     final body = accountsAsync.when(
       data: (accounts) {
         return CustomScrollView(
@@ -79,11 +81,14 @@ class DashboardScreen extends ConsumerWidget {
               sliver: MoneyAccountsSliverList(
                 accounts: accounts,
                 currency: currency,
-                onEdit  : (account) => _openAccountForm(context, account: account, isIOS: isIOS),
-                onDelete: (account) => showDeleteAccountDialog(context, ref, account),
+                onEdit: (account) =>
+                    _openAccountForm(context, account: account, isIOS: isIOS),
+                onDelete: (account) =>
+                    showDeleteAccountDialog(context, ref, account),
               ),
             ),
-            const SliverToBoxAdapter(child: SizedBox(height: 16)),
+
+            SliverToBoxAdapter(child: SizedBox(height: height * 0.14)),
           ],
         );
       },
@@ -107,22 +112,10 @@ class DashboardScreen extends ConsumerWidget {
     required bool isIOS,
   }) {
     if (isIOS) {
-      showCupertinoModalPopup<void>(
+      showCupertinoDialog<void>(
         context: context,
         barrierDismissible: true,
-        builder: (_) => Material(
-          color: Colors.transparent,
-          child: SafeArea(
-            top: false,
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                color: CupertinoColors.systemBackground.resolveFrom(context),
-                child: AccountFormSheet(account: account),
-              ),
-            ),
-          ),
-        ),
+        builder: (_) => AccountFormDialog(account: account),
       );
       return;
     }

@@ -19,7 +19,17 @@ class BillsScreen extends ConsumerWidget {
         data: (bills) => CustomScrollView(
           physics: const ClampingScrollPhysics(),
           slivers: [
-            const SliverAppBar(pinned: true, title: Text('Servicios')),
+            SliverAppBar(
+              pinned: true,
+              title: const Text('Servicios'),
+              actions: [
+                IconButton(
+                  onPressed: () => _showBillForm(context),
+                  icon: const Icon(Icons.add),
+                  tooltip: 'Agregar servicio',
+                ),
+              ],
+            ),
             if (bills.isEmpty)
               const SliverFillRemaining(
                 hasScrollBody: false,
@@ -39,7 +49,6 @@ class BillsScreen extends ConsumerWidget {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => Center(child: Text('Error: $error')),
       ),
-      floatingActionButton: AddBillFab(onPressed: () => _showBillForm(context)),
     );
   }
 

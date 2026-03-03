@@ -18,11 +18,21 @@ class ExpensesScreen extends ConsumerWidget {
       body: expensesAsync.when(
         data: (expenses) {
           if (expenses.isEmpty) {
-            return const CustomScrollView(
-              physics: ClampingScrollPhysics(),
+            return CustomScrollView(
+              physics: const ClampingScrollPhysics(),
               slivers: [
-                SliverAppBar(pinned: true, title: Text('Gastos')),
-                SliverFillRemaining(
+                SliverAppBar(
+                  pinned: true,
+                  title: const Text('Gastos'),
+                  actions: [
+                    IconButton(
+                      onPressed: () => _openExpenseForm(context, ref),
+                      icon: const Icon(Icons.add),
+                      tooltip: 'Agregar gasto',
+                    ),
+                  ],
+                ),
+                const SliverFillRemaining(
                   hasScrollBody: false,
                   child: Center(child: EmptyExpensesText()),
                 ),
@@ -38,7 +48,17 @@ class ExpensesScreen extends ConsumerWidget {
           return CustomScrollView(
             physics: const ClampingScrollPhysics(),
             slivers: [
-              const SliverAppBar(pinned: true, title: Text('Gastos')),
+              SliverAppBar(
+                pinned: true,
+                title: const Text('Gastos'),
+                actions: [
+                  IconButton(
+                    onPressed: () => _openExpenseForm(context, ref),
+                    icon: const Icon(Icons.add),
+                    tooltip: 'Agregar gasto',
+                  ),
+                ],
+              ),
               SliverPadding(
                 padding: const EdgeInsets.all(16),
                 sliver: SliverToBoxAdapter(
@@ -66,9 +86,6 @@ class ExpensesScreen extends ConsumerWidget {
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => Center(child: Text('Error: $error')),
-      ),
-      floatingActionButton: AddExpenseFab(
-        onPressed: () => _openExpenseForm(context, ref),
       ),
     );
   }
