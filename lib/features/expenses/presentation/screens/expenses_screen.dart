@@ -1,5 +1,6 @@
 import 'package:expense_control_app/features/cards/presentation/providers/cards_providers.dart';
 import 'package:expense_control_app/features/expenses/presentation/presentation.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -93,6 +94,27 @@ class ExpensesScreen extends ConsumerWidget {
 
   void _openExpenseForm(BuildContext context, WidgetRef ref) {
     final cards = ref.read(availableCardsProvider).valueOrNull ?? const [];
+    final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+
+    if (isIOS) {
+      showCupertinoModalPopup<void>(
+        context: context,
+        barrierDismissible: true,
+        builder: (_) => Align(
+          alignment: Alignment.bottomCenter,
+          child: Material(
+            color: CupertinoColors.systemBackground.resolveFrom(context),
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(18),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: ExpenseFormSheet(cards: cards),
+          ),
+        ),
+      );
+      return;
+    }
+
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
