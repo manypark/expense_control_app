@@ -16,8 +16,7 @@ class DashboardScreen extends ConsumerWidget {
     final accountsAsync = ref.watch(dashboardAccountsProvider);
     final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
     final currency = NumberFormat.currency(locale: 'es_MX', symbol: r'$');
-    final isTotalVisible =
-        ref.watch(totalAmountVisibilityProvider).valueOrNull ?? true;
+    final isTotalVisible = ref.watch(totalAmountVisibilityProvider).valueOrNull ?? true;
     final height = MediaQuery.of(context).size.height;
 
     final body = accountsAsync.when(

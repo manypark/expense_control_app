@@ -13,6 +13,7 @@ class ExpensesScreen extends ConsumerWidget {
     final cardsById = ref.watch(cardsByIdProvider);
     final statementExpenses = ref.watch(expensesForCurrentStatementProvider);
     final currency = NumberFormat.currency(locale: 'es_MX', symbol: r'$');
+    final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: expensesAsync.when(
@@ -80,7 +81,7 @@ class ExpensesScreen extends ConsumerWidget {
                   currency: currency,
                 ),
               ),
-              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+              SliverToBoxAdapter(child: SizedBox(height: height * 0.14)),
             ],
           );
         },
