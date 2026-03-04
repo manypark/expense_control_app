@@ -12,6 +12,7 @@ class AnalyticsScreen extends ConsumerWidget {
     final byMonth = ref.watch(spendingByMonthProvider);
     final byCategory = ref.watch(spendingByCategoryProvider);
     final byCard = ref.watch(spendingByCardProvider);
+    final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: CustomScrollView(
@@ -41,10 +42,11 @@ class AnalyticsScreen extends ConsumerWidget {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 8),
-                SizedBox(height: 220, child: _PieFromTuples(data: byCard)),
+                SizedBox(height: 220, child: _PieFromTuples(data: byCard)),                
               ],
             ),
           ),
+          SliverToBoxAdapter(child: SizedBox(height: height * 0.14)),
         ],
       ),
     );

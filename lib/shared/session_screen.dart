@@ -31,11 +31,11 @@ class SessionScreen extends ConsumerWidget {
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton.tonal(
-                      onPressed: () =>
-                          ref.read(authControllerProvider.notifier).logout(),
-                      child: const Text('Cerrar sesion'),
+                      onPressed : () => ref.read(authControllerProvider.notifier).logout(),
+                      child     : const Text('Cerrar sesion'),
                     ),
                   ),
+                  const SizedBox(height: 120),
                 ],
               ),
             ),

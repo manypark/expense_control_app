@@ -6,7 +6,7 @@ part of 'bills_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$allBillsHash() => r'769c1d0e54fe17a35fd903f1530b8eafe6529d1c';
+String _$allBillsHash() => r'b8ade5d212b17026b3045d4777649c4164471ed4';
 
 /// See also [allBills].
 @ProviderFor(allBills)
