@@ -7,43 +7,42 @@ import 'package:expense_control_app/features/expenses/domain/entities/expense.da
 import 'package:expense_control_app/features/cards/domain/entities/credit_card.dart';
 
 class ExpensesSliverList extends StatelessWidget {
-
   final NumberFormat currency;
   final List<ExpenseEntity> expenses;
   final Map<String, CreditCardEntity> cardsById;
+  final void Function(ExpenseEntity expense) onDelete;
   const ExpensesSliverList({
     super.key,
     required this.expenses,
     required this.cardsById,
     required this.currency,
+    required this.onDelete,
   });
-
 
   @override
   Widget build(BuildContext context) {
-
     final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
 
     return SliverList(
-      delegate: SliverChildBuilderDelegate( ( context, index ) {
-          final expense = expenses[index];
-          final amountText = currency.format(expense.amount);
+      delegate: SliverChildBuilderDelegate((context, index) {
+        final expense = expenses[index];
+        final amountText = currency.format(expense.amount);
 
-          if (isIOS) {
-            return ExpenseItemTileIos(
-              expense: expense,
-              cardsById: cardsById,
-              amountText: amountText,
-            );
-          }
-          return ExpenseItemCard(
+        if (isIOS) {
+          return ExpenseItemTileIos(
             expense: expense,
             cardsById: cardsById,
             amountText: amountText,
+            onDelete: () => onDelete(expense),
           );
-        }, 
-        childCount: expenses.length,
-      ),
+        }
+        return ExpenseItemCard(
+          expense: expense,
+          cardsById: cardsById,
+          amountText: amountText,
+          onDelete: () => onDelete(expense),
+        );
+      }, childCount: expenses.length),
     );
   }
 }

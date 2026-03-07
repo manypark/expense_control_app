@@ -347,6 +347,19 @@ class ExpenseCommands extends _$ExpenseCommands {
       loading.stop();
     }
   }
+
+  Future<void> deleteExpense(String expenseId) async {
+    final api = ref.read(apiClientProvider);
+    final loading = ref.read(globalLoadingProvider.notifier);
+    loading.start();
+
+    try {
+      await api.delete(path: '/expenses/$expenseId');
+      ref.invalidate(expensesStreamProvider);
+    } finally {
+      loading.stop();
+    }
+  }
 }
 
 @riverpod

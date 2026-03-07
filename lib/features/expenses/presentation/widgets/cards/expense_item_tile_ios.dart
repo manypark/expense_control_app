@@ -6,28 +6,30 @@ import 'package:expense_control_app/features/cards/domain/entities/credit_card.d
 import 'package:expense_control_app/features/expenses/domain/entities/expense.dart';
 
 class ExpenseItemTileIos extends StatelessWidget {
-
   final String amountText;
   final ExpenseEntity expense;
   final Map<String, CreditCardEntity> cardsById;
+  final VoidCallback onDelete;
 
   const ExpenseItemTileIos({
     super.key,
     required this.expense,
     required this.cardsById,
     required this.amountText,
+    required this.onDelete,
   });
-
 
   @override
   Widget build(BuildContext context) {
-    final cardLabel = expense.creditCardId == null ? null : (cardsById[expense.creditCardId!]?.label ?? 'Tarjeta');
+    final cardLabel = expense.creditCardId == null
+        ? null
+        : (cardsById[expense.creditCardId!]?.label ?? 'Tarjeta');
 
     return Container(
-      margin    : const EdgeInsets.symmetric(vertical: 6),
-      padding   : const EdgeInsets.all(12),
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color       : Colors.black12.withAlpha(10),
+        color: Colors.black12.withAlpha(10),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -87,6 +89,14 @@ class ExpenseItemTileIos extends StatelessWidget {
                     fontSize: 11,
                   ),
                 ),
+              const SizedBox(height: 4),
+              GestureDetector(
+                onTap: onDelete,
+                child: const Padding(
+                  padding: EdgeInsets.all(2),
+                  child: Icon(Icons.delete_outline, size: 18),
+                ),
+              ),
             ],
           ),
         ],

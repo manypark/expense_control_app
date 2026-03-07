@@ -1,4 +1,6 @@
+import 'package:expense_control_app/core/services/app_providers.dart';
 import 'package:expense_control_app/features/cards/presentation/providers/cards_providers.dart';
+import 'package:expense_control_app/features/expenses/domain/entities/expense.dart';
 import 'package:expense_control_app/features/expenses/presentation/presentation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -75,13 +77,15 @@ class ExpensesScreen extends ConsumerWidget {
                 ),
               ),
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                sliver: ExpensesSliverList(
-                  expenses: expenses,
-                  cardsById: cardsById,
-                  currency: currency,
+                padding : const EdgeInsets.symmetric(horizontal: 16),
+                sliver  : ExpensesSliverList(
+                  expenses  : expenses,
+                  cardsById : cardsById,
+                  currency  : currency,
+                  onDelete  : (expense) => _confirmDeleteExpense(context, ref, expense),
                 ),
               ),
+              
               SliverToBoxAdapter(child: SizedBox(height: height * 0.14)),
             ],
           );
@@ -104,9 +108,7 @@ class ExpensesScreen extends ConsumerWidget {
           alignment: Alignment.bottomCenter,
           child: Material(
             color: CupertinoColors.systemBackground.resolveFrom(context),
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(18),
-            ),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
             clipBehavior: Clip.antiAlias,
             child: ExpenseFormSheet(cards: cards),
           ),
@@ -120,5 +122,77 @@ class ExpensesScreen extends ConsumerWidget {
       isScrollControlled: true,
       builder: (_) => ExpenseFormSheet(cards: cards),
     );
+  }
+
+  void _confirmDeleteExpense(
+    BuildContext context,
+    WidgetRef ref,
+    ExpenseEntity expense,
+  ) {
+    final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+
+    if (isIOS) {
+      showCupertinoDialog<bool>(
+        context: context,
+        builder: (_) => CupertinoAlertDialog(
+          title: const Text('Eliminar gasto'),
+          content: Text(
+            'Se eliminara "${expense.title}". Esta accion no se puede deshacer.',
+          ),
+          actions: [
+            CupertinoDialogAction(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancelar'),
+            ),
+            CupertinoDialogAction(
+              isDestructiveAction: true,
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Eliminar'),
+            ),
+          ],
+        ),
+      ).then((accepted) {
+        if (!context.mounted) return;
+        if (accepted == true) _deleteExpense(context, ref, expense.id);
+      });
+      return;
+    }
+
+    showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Eliminar gasto'),
+        content: Text(
+          'Se eliminara "${expense.title}". Esta accion no se puede deshacer.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    ).then((accepted) {
+      if (!context.mounted) return;
+      if (accepted == true) _deleteExpense(context, ref, expense.id);
+    });
+  }
+
+  void _deleteExpense(BuildContext context, WidgetRef ref, String expenseId) {
+    ref
+        .read(expenseCommandsProvider.notifier)
+        .deleteExpense(expenseId)
+        .catchError((_) {
+          if (!context.mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Hubo un error al eliminar el gasto.'),
+            ),
+          );
+        });
   }
 }
