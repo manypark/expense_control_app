@@ -1,6 +1,6 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import 'package:expense_control_app/features/analytics/presentation/providers/analytics_providers.dart';
 
@@ -23,26 +23,22 @@ class AnalyticsScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(16),
             sliver: SliverList.list(
               children: [
-                const Text(
-                  'Gastos por mes',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                _AnalyticsSection(
+                  title: 'Gastos por mes',
+                  child: _MonthBarList(data: byMonth),
                 ),
                 const SizedBox(height: 8),
-                SizedBox(height: 220, child: _MonthBarChart(data: byMonth)),
                 const SizedBox(height: 16),
-                const Text(
-                  'Gastos por categoria',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                _AnalyticsSection(
+                  title: 'Gastos por categoria',
+                  child: _ValueBarList(data: byCategory),
                 ),
                 const SizedBox(height: 8),
-                SizedBox(height: 220, child: _PieFromTuples(data: byCategory)),
                 const SizedBox(height: 16),
-                const Text(
-                  'Gastos por tarjeta',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                _AnalyticsSection(
+                  title: 'Gastos por tarjeta',
+                  child: _ValueBarList(data: byCard),
                 ),
-                const SizedBox(height: 8),
-                SizedBox(height: 220, child: _PieFromTuples(data: byCard)),                
               ],
             ),
           ),
@@ -53,8 +49,8 @@ class AnalyticsScreen extends ConsumerWidget {
   }
 }
 
-class _MonthBarChart extends StatelessWidget {
-  const _MonthBarChart({required this.data});
+class _MonthBarList extends StatelessWidget {
+  const _MonthBarList({required this.data});
 
   final List<(String month, double value)> data;
 
@@ -64,53 +60,35 @@ class _MonthBarChart extends StatelessWidget {
       return const Center(child: Text('Sin datos'));
     }
 
-    final maxY = data
-        .map((item) => item.$2)
-        .fold<double>(0, (a, b) => a > b ? a : b);
-
-    return BarChart(
-      BarChartData(
-        maxY: maxY == 0 ? 100 : maxY * 1.15,
-        barGroups: [
-          for (var i = 0; i < data.length; i++)
-            BarChartGroupData(
-              x: i,
-              barRods: [BarChartRodData(toY: data[i].$2)],
-            ),
-        ],
-        titlesData: FlTitlesData(
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              getTitlesWidget: (value, meta) {
-                final index = value.toInt();
-                if (index < 0 || index >= data.length) {
-                  return const SizedBox.shrink();
-                }
-                return Text(
-                  data[index].$1.substring(5),
-                  style: const TextStyle(fontSize: 10),
-                );
-              },
-            ),
-          ),
-          leftTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: true, reservedSize: 40),
-          ),
-          topTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          rightTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-        ),
-      ),
+    final currency = NumberFormat.currency(locale: 'es_MX', symbol: r'$');
+    final maxValue = data.fold<double>(
+      0,
+      (max, item) => item.$2 > max ? item.$2 : max,
     );
+
+    return Column(
+      children: [
+        for (var i = 0; i < data.length; i++)
+          _ValueBarRow(
+            label: _monthLabel(data[i].$1),
+            amountText: currency.format(data[i].$2),
+            ratio: maxValue == 0 ? 0 : data[i].$2 / maxValue,
+            color: _monthPalette[i % _monthPalette.length],
+          ),
+      ],
+    );
+  }
+
+  String _monthLabel(String value) {
+    final date = DateTime.tryParse('$value-01');
+    if (date == null) return value;
+    final label = DateFormat('MMMM yyyy', 'es_MX').format(date);
+    return '${label[0].toUpperCase()}${label.substring(1)}';
   }
 }
 
-class _PieFromTuples extends StatelessWidget {
-  const _PieFromTuples({required this.data});
+class _ValueBarList extends StatelessWidget {
+  const _ValueBarList({required this.data});
 
   final List<(String label, double value)> data;
 
@@ -120,21 +98,119 @@ class _PieFromTuples extends StatelessWidget {
       return const Center(child: Text('Sin datos'));
     }
 
-    return PieChart(
-      PieChartData(
-        sectionsSpace: 2,
-        centerSpaceRadius: 28,
-        sections: [
-          for (var i = 0; i < data.length; i++)
-            PieChartSectionData(
-              value: data[i].$2,
-              title: data[i].$1,
-              radius: 42,
-              color: Colors.accents[i % Colors.accents.length],
-              titleStyle: const TextStyle(fontSize: 11, color: Colors.white),
+    final currency = NumberFormat.currency(locale: 'es_MX', symbol: r'$');
+    final maxValue = data.fold<double>(
+      0,
+      (max, item) => item.$2 > max ? item.$2 : max,
+    );
+
+    return Column(
+      children: [
+        for (var i = 0; i < data.length; i++)
+          _ValueBarRow(
+            label: data[i].$1,
+            amountText: currency.format(data[i].$2),
+            ratio: maxValue == 0 ? 0 : data[i].$2 / maxValue,
+            color: _monthPalette[i % _monthPalette.length],
+          ),
+      ],
+    );
+  }
+}
+
+class _ValueBarRow extends StatelessWidget {
+  const _ValueBarRow({
+    required this.label,
+    required this.amountText,
+    required this.ratio,
+    required this.color,
+  });
+
+  final String label;
+  final String amountText;
+  final double ratio;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                amountText,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(999),
+            child: LinearProgressIndicator(
+              value: ratio.clamp(0.0, 1.0),
+              minHeight: 12,
+              backgroundColor: color.withValues(alpha: 0.14),
+              valueColor: AlwaysStoppedAnimation<Color>(color),
             ),
+          ),
         ],
       ),
     );
   }
 }
+
+class _AnalyticsSection extends StatelessWidget {
+  const _AnalyticsSection({required this.title, required this.child});
+
+  final String title;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: isIOS
+              ? BoxDecoration(
+                  color: Colors.black12.withAlpha(10),
+                  borderRadius: BorderRadius.circular(14),
+                )
+              : null,
+          child: Card(
+            elevation: isIOS ? 0 : null,
+            color: isIOS ? Colors.transparent : null,
+            child: Padding(padding: const EdgeInsets.all(16), child: child),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+const _monthPalette = <Color>[
+  Color(0xFF0F766E),
+  Color(0xFF2563EB),
+  Color(0xFFDC2626),
+  Color(0xFFF59E0B),
+  Color(0xFF7C3AED),
+  Color(0xFF0891B2),
+];

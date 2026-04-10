@@ -177,7 +177,7 @@ final cardCommandsProvider =
 );
 
 typedef _$CardCommands = AutoDisposeNotifier<void>;
-String _$expenseCommandsHash() => r'f715cd7549b64f3091ff9cc7dcd870be454440aa';
+String _$expenseCommandsHash() => r'7114856367876fe13df0474d0fd9d2ccf9bef877';
 
 /// See also [ExpenseCommands].
 @ProviderFor(ExpenseCommands)

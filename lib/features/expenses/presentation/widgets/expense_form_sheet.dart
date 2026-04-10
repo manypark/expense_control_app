@@ -9,9 +9,10 @@ import 'package:expense_control_app/features/expenses/domain/entities/expense.da
 import 'package:expense_control_app/features/expenses/domain/usecases/save_expense_usecase.dart';
 
 class ExpenseFormSheet extends ConsumerStatefulWidget {
-  const ExpenseFormSheet({super.key, required this.cards});
+  const ExpenseFormSheet({super.key, required this.cards, this.expense});
 
   final List<CreditCardEntity> cards;
+  final ExpenseEntity? expense;
 
   @override
   ConsumerState<ExpenseFormSheet> createState() => _ExpenseFormSheetState();
@@ -25,6 +26,21 @@ class _ExpenseFormSheetState extends ConsumerState<ExpenseFormSheet> {
   DateTime _selectedDate = DateTime.now();
   String _selectedCategory = AppConstants.expenseCategories.first;
   String? _selectedCardId;
+
+  bool get _isEditing => widget.expense != null;
+
+  @override
+  void initState() {
+    super.initState();
+    final expense = widget.expense;
+    if (expense == null) return;
+    _titleController.text = expense.title;
+    _descriptionController.text = expense.description;
+    _amountController.text = expense.amount.toStringAsFixed(2);
+    _selectedDate = expense.incurredAt;
+    _selectedCategory = expense.category;
+    _selectedCardId = expense.creditCardId;
+  }
 
   @override
   void dispose() {
@@ -50,8 +66,8 @@ class _ExpenseFormSheetState extends ConsumerState<ExpenseFormSheet> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'Registrar gasto',
+            Text(
+              _isEditing ? 'Editar gasto' : 'Registrar gasto',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 12),
@@ -98,11 +114,23 @@ class _ExpenseFormSheetState extends ConsumerState<ExpenseFormSheet> {
               child: isIOS
                   ? CupertinoButton.filled(
                       onPressed: isSaving ? null : _saveExpense,
-                      child: Text(isSaving ? 'Cargando...' : 'Guardar gasto'),
+                      child: Text(
+                        isSaving
+                            ? 'Cargando...'
+                            : (_isEditing
+                                  ? 'Guardar cambios'
+                                  : 'Guardar gasto'),
+                      ),
                     )
                   : FilledButton(
                       onPressed: isSaving ? null : _saveExpense,
-                      child: Text(isSaving ? 'Cargando...' : 'Guardar gasto'),
+                      child: Text(
+                        isSaving
+                            ? 'Cargando...'
+                            : (_isEditing
+                                  ? 'Guardar cambios'
+                                  : 'Guardar gasto'),
+                      ),
                     ),
             ),
           ],
@@ -128,7 +156,7 @@ class _ExpenseFormSheetState extends ConsumerState<ExpenseFormSheet> {
           );
 
     final expense = ExpenseEntity(
-      id: '',
+      id: widget.expense?.id ?? '',
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
       category: _selectedCategory,

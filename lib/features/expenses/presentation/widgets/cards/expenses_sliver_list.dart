@@ -10,13 +10,17 @@ class ExpensesSliverList extends StatelessWidget {
   final NumberFormat currency;
   final List<ExpenseEntity> expenses;
   final Map<String, CreditCardEntity> cardsById;
+  final void Function(ExpenseEntity expense) onEdit;
   final void Function(ExpenseEntity expense) onDelete;
+  final bool isLoadingMore;
   const ExpensesSliverList({
     super.key,
     required this.expenses,
     required this.cardsById,
     required this.currency,
+    required this.onEdit,
     required this.onDelete,
+    required this.isLoadingMore,
   });
 
   @override
@@ -25,6 +29,12 @@ class ExpensesSliverList extends StatelessWidget {
 
     return SliverList(
       delegate: SliverChildBuilderDelegate((context, index) {
+        if (index >= expenses.length) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
         final expense = expenses[index];
         final amountText = currency.format(expense.amount);
 
@@ -33,6 +43,7 @@ class ExpensesSliverList extends StatelessWidget {
             expense: expense,
             cardsById: cardsById,
             amountText: amountText,
+            onEdit: () => onEdit(expense),
             onDelete: () => onDelete(expense),
           );
         }
@@ -40,9 +51,10 @@ class ExpensesSliverList extends StatelessWidget {
           expense: expense,
           cardsById: cardsById,
           amountText: amountText,
+          onEdit: () => onEdit(expense),
           onDelete: () => onDelete(expense),
         );
-      }, childCount: expenses.length),
+      }, childCount: expenses.length + (isLoadingMore ? 1 : 0)),
     );
   }
 }
