@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
 
+import '../widgets/texts/common_text.dart';
+
 class LoginScreen extends StatelessWidget {
+
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
+  final bool loading;
+  final VoidCallback onSubmit;
+  final VoidCallback onGoToRegister;
+  final String? errorText;
+
   const LoginScreen({
     super.key,
     required this.emailController,
@@ -10,13 +20,6 @@ class LoginScreen extends StatelessWidget {
     required this.onGoToRegister,
     this.errorText,
   });
-
-  final TextEditingController emailController;
-  final TextEditingController passwordController;
-  final bool loading;
-  final VoidCallback onSubmit;
-  final VoidCallback onGoToRegister;
-  final String? errorText;
 
   @override
   Widget build(BuildContext context) {
@@ -32,26 +35,25 @@ class LoginScreen extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
-                      'Iniciar sesion',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
+
+                    CommonTexts(
+                      title: 'Iniciar sesión',
                     ),
+
                     const SizedBox(height: 16),
-                    TextField(
-                      controller: emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(labelText: 'Email'),
-                    ),
+
+                    CommonInputText(emailController: emailController),
+
                     const SizedBox(height: 8),
+
                     TextField(
                       controller: passwordController,
                       obscureText: true,
                       decoration: const InputDecoration(labelText: 'Password'),
                     ),
+
                     const SizedBox(height: 16),
+
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton(
@@ -59,10 +61,12 @@ class LoginScreen extends StatelessWidget {
                         child: const Text('Entrar'),
                       ),
                     ),
+
                     TextButton(
                       onPressed: loading ? null : onGoToRegister,
                       child: const Text('No tengo cuenta, registrarme'),
                     ),
+
                     if (errorText != null)
                       Text(
                         errorText!,
@@ -75,6 +79,24 @@ class LoginScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class CommonInputText extends StatelessWidget {
+  const CommonInputText({
+    super.key,
+    required this.emailController,
+  });
+
+  final TextEditingController emailController;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: emailController,
+      keyboardType: TextInputType.emailAddress,
+      decoration: const InputDecoration(labelText: 'Email'),
     );
   }
 }
